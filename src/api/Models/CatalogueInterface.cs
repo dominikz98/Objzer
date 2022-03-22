@@ -1,6 +1,6 @@
 ﻿namespace api.Models
 {
-    public class Catalogue_Interface
+    public class CatalogueInterface
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
