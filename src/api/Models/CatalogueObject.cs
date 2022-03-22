@@ -5,6 +5,6 @@
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public ICollection<Guid> CatalogueInterfaceIds { get; set; } = new HashSet<Guid>();
+        public List<CatalogueInterface> Interfaces { get; set; } = new List<CatalogueInterface>();
     }
 }

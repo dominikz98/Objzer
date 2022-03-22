@@ -1,3 +1,4 @@
+using api.Core;
 using MediatR;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMediatR(typeof(Program));
+builder.Services.AddDbContext<ObjzerContext>();
 
 var app = builder.Build();
 

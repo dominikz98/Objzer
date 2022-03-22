@@ -7,5 +7,6 @@
         public string Description { get; set; } = string.Empty;
         public string Short { get; set; } = string.Empty;
         public string HexColor { get; set; } = string.Empty;
+        public List<CatalogueObject> Objects { get; set; } = new List<CatalogueObject>();
     }
 }
