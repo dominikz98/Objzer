@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ObjectsEndpoints } from 'src/app/endpoints/objects.endpoints';
 
 @Component({
   selector: 'app-catalogue',
@@ -7,9 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CataloguePage implements OnInit {
 
-  constructor() { }
+  objects: any = {};
+
+  constructor(private endpoints: ObjectsEndpoints) { }
 
   ngOnInit() {
+    this.endpoints.get()
+      .subscribe((data: {}) => {
+        this.objects = data;
+      })
   }
 
 }

@@ -3,16 +3,12 @@
   <ion-searchbar animated></ion-searchbar>
 
   <ion-list>
-    <ion-item>
-
+    <ion-item *ngFor="let object of objects">
       <ion-grid>
-
         <ion-row>
-
           <ion-col>
-            <ion-label>FSMSchueler</ion-label>
+            <ion-label> {{ object.name }}</ion-label>
           </ion-col>
-
           <ion-col>
             <ion-chip color="primary">
               <ion-label>ID</ion-label>
@@ -27,22 +23,16 @@
               <ion-label>KNDE</ion-label>
             </ion-chip>
           </ion-col>
-
           <ion-col>
             <ion-button color="warning">
               <ion-icon name="color-wand-outline"></ion-icon>
-              Edit
             </ion-button>
             <ion-button color="danger">
               <ion-icon name="trash-outline"></ion-icon>
-              Delete
             </ion-button>
           </ion-col>
-
         </ion-row>
-
       </ion-grid>
-
     </ion-item>
   </ion-list>
 </ion-content>
