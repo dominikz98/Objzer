@@ -22,11 +22,11 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'interfaces',
+        path: 'contracts',
         children: [
           {
             path: '',
-            loadChildren: () => import('./interfaces/interfaces.module').then(m => m.InterfacesPageModule)
+            loadChildren: () => import('./contracts/contracts.module').then(m => m.ContractsPageModule)
           }
         ]
       }

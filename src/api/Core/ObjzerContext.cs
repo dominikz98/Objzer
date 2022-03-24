@@ -5,8 +5,11 @@ namespace api.Core
 {
     public class ObjzerContext : DbContext
     {
-        public DbSet<CatalogueObject> Objects { get; set; }
-        public DbSet<CatalogueInterface> Interfaces { get; set; }
+        public DbSet<CTObject> Objects { get; set; }
+        public DbSet<CTContract> Contracts { get; set; }
+        public DbSet<CTInterface> Interfaces { get; set; }
+        public DbSet<CTAbstraction> Abstractions { get; set; }
+        public DbSet<CTEnumeration> Enumerations { get; set; }
 
         public string DbPath { get; }
 
@@ -24,13 +27,25 @@ namespace api.Core
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<CatalogueObject>()
+            builder.Entity<CTObject>()
                 .ToTable("objects")
                 .HasMany(x => x.Interfaces)
                 .WithMany(x => x.Objects);
 
-            builder.Entity<CatalogueInterface>()
+            builder.Entity<CTContract>()
+                .ToTable("contracts");
+
+            builder.Entity<CTAbstraction>()
+                .ToTable("abstractions");
+
+            builder.Entity<CTInterface>()
                 .ToTable("interfaces");
+
+            builder.Entity<CTEnumeration>().ToTable("enumerations");
+            builder.Entity<CTEnumeration>()
+                .Property(x => x.Values)
+                .HasConversion(x => string.Join(';', x), x => x.Split(';', StringSplitOptions.None).ToList());
+
         }
     }
 }

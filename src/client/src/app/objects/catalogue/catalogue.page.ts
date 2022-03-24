@@ -8,13 +8,13 @@ import { ObjectsEndpoints } from 'src/app/endpoints/objects.endpoints';
 })
 export class CataloguePage implements OnInit {
 
-  objects: any = {};
+  objects: any[];
 
   constructor(private endpoints: ObjectsEndpoints) { }
 
   ngOnInit() {
     this.endpoints.get()
-      .subscribe((data: {}) => {
+      .subscribe((data: any[]) => {
         this.objects = data;
       })
   }

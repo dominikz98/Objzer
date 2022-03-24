@@ -11,7 +11,7 @@ export class ObjectsEndpoints {
 
   constructor(private client: ApiClient) { }
 
-   get(): Observable<ObjectVM> {
-    return this.client.get<ObjectVM>('objects/catalogue');
+   get(): Observable<ObjectVM[]> {
+    return this.client.get<ObjectVM[]>('objects/catalogue');
   }
 }

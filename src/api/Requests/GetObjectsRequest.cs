@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Requests
 {
-    public class GetObjectsRequest : IRequest<IReadOnlyCollection<CatalogueObject>> { }
+    public class GetObjectsRequest : IRequest<IReadOnlyCollection<CTObject>> { }
 
-    public class GetObjectsRequestHandler : IRequestHandler<GetObjectsRequest, IReadOnlyCollection<CatalogueObject>>
+    public class GetObjectsRequestHandler : IRequestHandler<GetObjectsRequest, IReadOnlyCollection<CTObject>>
     {
         private readonly ObjzerContext _context;
 
@@ -16,9 +16,9 @@ namespace api.Requests
             _context = context;
         }
 
-        public async Task<IReadOnlyCollection<CatalogueObject>> Handle(GetObjectsRequest request, CancellationToken cancellationToken)
+        public async Task<IReadOnlyCollection<CTObject>> Handle(GetObjectsRequest request, CancellationToken cancellationToken)
             => await _context.Objects.Include(x => x.Interfaces)
-            .AsNoTracking()
-            .ToListAsync(cancellationToken);
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
     }
 }
