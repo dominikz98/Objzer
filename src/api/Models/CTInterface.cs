@@ -3,8 +3,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace api.Models
 {
-    public class CTInterface : CTContract
+    public class CTInterface : CTEntity
     {
+        public IList<CTObject> Objects { get; set; } = new List<CTObject>();
         public IList<CTInterfaceAssignment> Implementations { get; set; } = new List<CTInterfaceAssignment>();
         public IList<CTInterfaceProperty> Properties { get; set; } = new List<CTInterfaceProperty>();
     }

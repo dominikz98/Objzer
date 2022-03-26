@@ -1,6 +1,6 @@
 ﻿namespace api.Core
 {
-    public class HistoryFactory
+    internal class HistoryFactory
     {
     }
 }

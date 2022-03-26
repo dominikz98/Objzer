@@ -1,13 +1,14 @@
 ﻿using api.Core;
 using api.Models;
+using api.ViewModels;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Requests
 {
-    public class GetObjectsRequest : IRequest<IReadOnlyCollection<CTObject>> { }
+    public class GetObjectsRequest : IRequest<IReadOnlyCollection<ObjectVM>> { }
 
-    public class GetObjectsRequestHandler : IRequestHandler<GetObjectsRequest, IReadOnlyCollection<CTObject>>
+    public class GetObjectsRequestHandler : IRequestHandler<GetObjectsRequest, IReadOnlyCollection<ObjectVM>>
     {
         private readonly DBContext _context;
 
@@ -16,10 +17,16 @@ namespace api.Requests
             _context = context;
         }
 
-        public async Task<IReadOnlyCollection<CTObject>> Handle(GetObjectsRequest request, CancellationToken cancellationToken)
+        public async Task<IReadOnlyCollection<ObjectVM>> Handle(GetObjectsRequest request, CancellationToken cancellationToken)
             => await _context.Set<CTObject>()
-                .Include(x => x.Contracts)
-                .AsNoTracking()
+                .Select(x => new ObjectVM()
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    PropertyCount = x.Properties.Count,
+                    AbstractionCount = x.Abstractions.Count,
+                    InterfaceCount = x.Interfaces.Count
+                })
                 .ToListAsync(cancellationToken);
     }
 }

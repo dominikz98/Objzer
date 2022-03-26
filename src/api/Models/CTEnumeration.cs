@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace api.Models
 {
-    public class CTEnumeration : CTContract
+    public class CTEnumeration : CTEntity
     {
         public IList<CTEnumerationProperty> Properties { get; set; } = new List<CTEnumerationProperty>();
     }

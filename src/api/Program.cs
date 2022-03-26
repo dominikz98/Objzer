@@ -15,6 +15,7 @@ builder.Services.AddMediatR(typeof(Program));
 builder.Services.AddDbContext<DBContext>();
 builder.Services.AddCors();
 builder.Services.AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<AddInterfaceValidator>());
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 

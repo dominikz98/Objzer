@@ -1,4 +1,7 @@
-﻿using api.Requests;
+﻿using api.Core;
+using api.Requests;
+using api.ViewModels;
+using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,10 +12,12 @@ namespace api.Controllers
     public class InterfacesController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
-        public InterfacesController(IMediator mediator)
+        public InterfacesController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
+            _mapper = mapper;
         }
 
 
@@ -21,8 +26,18 @@ namespace api.Controllers
             => Ok(await _mediator.Send(null, cancellationToken));
 
         [HttpPost()]
-        public async Task<IActionResult> Add([FromBody] AddInterfaceRequest request, CancellationToken cancellationToken)
-            => Ok(await _mediator.Send(request, cancellationToken));
+        public async Task<IActionResult> Add([FromBody] AddInterfaceVM vm, CancellationToken cancellationToken)
+        {
+            var request = _mapper.Map<AddInterfaceRequest>(vm);
+            var result = await _mediator.Send(request, cancellationToken);
+
+            return result.Status switch
+            {
+                RequestResultStatus.SUCCESS => Ok(result.Value),
+                RequestResultStatus.VALIDATION_ERROR => BadRequest(result.Message),
+                _ => throw new NotImplementedException()
+            };
+        }
 
         [HttpPut()]
         public async Task<IActionResult> Update(CancellationToken cancellationToken)

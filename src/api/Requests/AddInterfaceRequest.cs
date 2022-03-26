@@ -6,23 +6,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Requests
 {
-    public class AddInterfaceRequest : IRequest<CTInterface>
+    public class AddInterfaceRequest : IRequest<RequestResult<CTInterface>>
     {
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public List<Guid> ChildrenIds { get; set; } = new List<Guid>();
     }
 
-    public class AddInterfaceValidator : AbstractValidator<AddInterfaceRequest>
-    {
-        public AddInterfaceValidator()
-        {
-            RuleFor(x => x.Name).NotEmpty();
-            RuleFor(x => x.Description).NotEmpty();
-        }
-    }
-
-    public class AddInterfaceRequestHandler : IRequestHandler<AddInterfaceRequest, CTInterface>
+    public class AddInterfaceRequestHandler : IRequestHandler<AddInterfaceRequest, RequestResult<CTInterface>>
     {
         private readonly DBContext _context;
 
@@ -31,10 +22,18 @@ namespace api.Requests
             _context = context;
         }
 
-        public async Task<CTInterface> Handle(AddInterfaceRequest request, CancellationToken cancellationToken)
+        public async Task<RequestResult<CTInterface>> Handle(AddInterfaceRequest request, CancellationToken cancellationToken)
         {
+            // validate
+            var alreadyExists = await _context.Set<CTInterface>()
+                .Where(x => x.Name == request.Name)
+                .AnyAsync(cancellationToken);
+
+            if (alreadyExists)
+                return RequestResult.Error<CTInterface>("Interface with same name already exists!");
+
             // create new interface
-            var newInterface = new CTInterface()
+            var @interface = new CTInterface()
             {
                 Id = Guid.NewGuid(),
                 Name = request.Name,
@@ -50,17 +49,18 @@ namespace api.Requests
 
                 var assignment = new CTInterfaceAssignment()
                 {
-                    ParentId = newInterface.Id,
-                    Parent = newInterface,
+                    ParentId = @interface.Id,
+                    Parent = @interface,
                     Children = children
                 };
-                newInterface.Implementations.Add(assignment);
+                @interface.Implementations.Add(assignment);
             }
 
             // save changes
-            await _context.AddAsync(newInterface, cancellationToken);
+            await _context.AddAsync(@interface, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
-            return newInterface;
+
+            return RequestResult.Success(@interface);
         }
     }
 }

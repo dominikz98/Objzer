@@ -3,8 +3,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace api.Models
 {
-    public class CTAbstraction : CTContract
+    public class CTAbstraction : CTEntity
     {
+        public IList<CTObject> Objects { get; set; } = new List<CTObject>();
         public IList<CTAbstractionAssignment> Inheritances { get; set; } = new List<CTAbstractionAssignment>();
         public IList<CTAbstractionProperty> Properties { get; set; } = new List<CTAbstractionProperty>();
     }

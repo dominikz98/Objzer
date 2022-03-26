@@ -5,7 +5,8 @@ namespace api.Models
 {
     public class CTObject : CTEntity
     {
-        public IList<CTContract> Contracts { get; set; } = new List<CTContract>();
+        public IList<CTAbstraction> Abstractions { get; set; } = new List<CTAbstraction>();
+        public IList<CTInterface> Interfaces { get; set; } = new List<CTInterface>();
         public IList<CTObjectProperty> Properties { get; set; } = new List<CTObjectProperty>();
     }
 
@@ -14,7 +15,10 @@ namespace api.Models
         public void Configure(EntityTypeBuilder<CTObject> builder)
         {
             builder.ToTable("objects")
-                .HasMany(x => x.Contracts)
+                .HasMany(x => x.Interfaces)
+                .WithMany(x => x.Objects);
+
+            builder.HasMany(x => x.Abstractions)
                 .WithMany(x => x.Objects);
 
             builder.HasMany(x => x.Properties)
