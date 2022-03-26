@@ -1,4 +1,6 @@
 using api.Core;
+using api.Requests;
+using FluentValidation.AspNetCore;
 using MediatR;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,8 +12,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMediatR(typeof(Program));
-builder.Services.AddDbContext<ObjzerContext>();
+builder.Services.AddDbContext<DBContext>();
 builder.Services.AddCors();
+builder.Services.AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<AddInterfaceValidator>());
 
 var app = builder.Build();
 

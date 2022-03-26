@@ -9,9 +9,9 @@ namespace api.Requests
 
     public class GetContractsRequestHandler : IRequestHandler<GetContractsRequest, IReadOnlyCollection<CTContract>>
     {
-        private readonly ObjzerContext _context;
+        private readonly DBContext _context;
 
-        public GetContractsRequestHandler(ObjzerContext context)
+        public GetContractsRequestHandler(DBContext context)
         {
             _context = context;
         }

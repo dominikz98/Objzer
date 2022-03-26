@@ -10,8 +10,8 @@ using api.Core;
 
 namespace api.Migrations
 {
-    [DbContext(typeof(ObjzerContext))]
-    [Migration("20220326085600_Initial")]
+    [DbContext(typeof(DBContext))]
+    [Migration("20220326095303_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,7 +26,7 @@ namespace api.Migrations
 
                     b.HasKey("ParentId");
 
-                    b.ToTable("abstractions_assignments", (string)null);
+                    b.ToTable("abstraction_assignments", (string)null);
                 });
 
             modelBuilder.Entity("api.Models.CTEntity", b =>
@@ -80,7 +80,7 @@ namespace api.Migrations
 
                     b.HasKey("ParentId");
 
-                    b.ToTable("interfaces_assignments", (string)null);
+                    b.ToTable("interface_assignments", (string)null);
                 });
 
             modelBuilder.Entity("CTContractCTObject", b =>
@@ -98,11 +98,65 @@ namespace api.Migrations
                     b.ToTable("CTContractCTObject");
                 });
 
+            modelBuilder.Entity("api.Models.CTAbstractionProperty", b =>
+                {
+                    b.HasBaseType("api.Models.CTEntity");
+
+                    b.Property<Guid>("AbstractionId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Required")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
+                    b.HasIndex("AbstractionId");
+
+                    b.ToTable("abstraction_properties", (string)null);
+                });
+
             modelBuilder.Entity("api.Models.CTContract", b =>
                 {
                     b.HasBaseType("api.Models.CTEntity");
 
                     b.ToTable("contracts", (string)null);
+                });
+
+            modelBuilder.Entity("api.Models.CTEnumerationProperty", b =>
+                {
+                    b.HasBaseType("api.Models.CTEntity");
+
+                    b.Property<Guid>("EnumerationId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Required")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
+                    b.HasIndex("EnumerationId");
+
+                    b.ToTable("enumeration_properties", (string)null);
+                });
+
+            modelBuilder.Entity("api.Models.CTInterfaceProperty", b =>
+                {
+                    b.HasBaseType("api.Models.CTEntity");
+
+                    b.Property<Guid>("InterfaceId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("Required")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("INTEGER");
+
+                    b.HasIndex("InterfaceId");
+
+                    b.ToTable("interface_properties", (string)null);
                 });
 
             modelBuilder.Entity("api.Models.CTObject", b =>
@@ -112,7 +166,7 @@ namespace api.Migrations
                     b.ToTable("objects", (string)null);
                 });
 
-            modelBuilder.Entity("api.Models.CTProperty", b =>
+            modelBuilder.Entity("api.Models.CTObjectProperty", b =>
                 {
                     b.HasBaseType("api.Models.CTEntity");
 
@@ -140,7 +194,7 @@ namespace api.Migrations
 
                     b.HasIndex("ObjectId");
 
-                    b.ToTable("properties", (string)null);
+                    b.ToTable("object_properties", (string)null);
                 });
 
             modelBuilder.Entity("api.Models.CTAbstraction", b =>
@@ -158,10 +212,6 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.CTEnumeration", b =>
                 {
                     b.HasBaseType("api.Models.CTContract");
-
-                    b.Property<string>("Values")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
 
                     b.ToTable("enumerations", (string)null);
                 });
@@ -226,6 +276,23 @@ namespace api.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("api.Models.CTAbstractionProperty", b =>
+                {
+                    b.HasOne("api.Models.CTAbstraction", "Abstraction")
+                        .WithMany("Properties")
+                        .HasForeignKey("AbstractionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("api.Models.CTEntity", null)
+                        .WithOne()
+                        .HasForeignKey("api.Models.CTAbstractionProperty", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Abstraction");
+                });
+
             modelBuilder.Entity("api.Models.CTContract", b =>
                 {
                     b.HasOne("api.Models.CTEntity", null)
@@ -233,6 +300,40 @@ namespace api.Migrations
                         .HasForeignKey("api.Models.CTContract", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("api.Models.CTEnumerationProperty", b =>
+                {
+                    b.HasOne("api.Models.CTEnumeration", "Enumeration")
+                        .WithMany("Properties")
+                        .HasForeignKey("EnumerationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("api.Models.CTEntity", null)
+                        .WithOne()
+                        .HasForeignKey("api.Models.CTEnumerationProperty", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Enumeration");
+                });
+
+            modelBuilder.Entity("api.Models.CTInterfaceProperty", b =>
+                {
+                    b.HasOne("api.Models.CTEntity", null)
+                        .WithOne()
+                        .HasForeignKey("api.Models.CTInterfaceProperty", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("api.Models.CTInterface", "Interface")
+                        .WithMany("Properties")
+                        .HasForeignKey("InterfaceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Interface");
                 });
 
             modelBuilder.Entity("api.Models.CTObject", b =>
@@ -244,11 +345,11 @@ namespace api.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("api.Models.CTProperty", b =>
+            modelBuilder.Entity("api.Models.CTObjectProperty", b =>
                 {
                     b.HasOne("api.Models.CTEntity", null)
                         .WithOne()
-                        .HasForeignKey("api.Models.CTProperty", "Id")
+                        .HasForeignKey("api.Models.CTObjectProperty", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -317,11 +418,20 @@ namespace api.Migrations
             modelBuilder.Entity("api.Models.CTAbstraction", b =>
                 {
                     b.Navigation("Inheritances");
+
+                    b.Navigation("Properties");
+                });
+
+            modelBuilder.Entity("api.Models.CTEnumeration", b =>
+                {
+                    b.Navigation("Properties");
                 });
 
             modelBuilder.Entity("api.Models.CTInterface", b =>
                 {
                     b.Navigation("Implementations");
+
+                    b.Navigation("Properties");
                 });
 #pragma warning restore 612, 618
         }

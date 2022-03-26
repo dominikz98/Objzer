@@ -81,8 +81,7 @@ namespace api.Migrations
                 name: "enumerations",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    Values = table.Column<string>(type: "TEXT", nullable: false)
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -120,7 +119,7 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "properties",
+                name: "object_properties",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
@@ -134,18 +133,55 @@ namespace api.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_properties", x => x.Id);
+                    table.PrimaryKey("PK_object_properties", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_properties_entities_Id",
+                        name: "FK_object_properties_entities_Id",
                         column: x => x.Id,
                         principalTable: "entities",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_properties_objects_ObjectId",
+                        name: "FK_object_properties_objects_ObjectId",
                         column: x => x.ObjectId,
                         principalTable: "objects",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "enumeration_properties",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    EnumerationId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Type = table.Column<int>(type: "INTEGER", nullable: false),
+                    Required = table.Column<bool>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_enumeration_properties", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_enumeration_properties_entities_Id",
+                        column: x => x.Id,
+                        principalTable: "entities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_enumeration_properties_enumerations_EnumerationId",
+                        column: x => x.EnumerationId,
+                        principalTable: "enumerations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "abstraction_assignments",
+                columns: table => new
+                {
+                    ParentId = table.Column<Guid>(type: "TEXT", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_abstraction_assignments", x => x.ParentId);
                 });
 
             migrationBuilder.CreateTable(
@@ -159,6 +195,11 @@ namespace api.Migrations
                 {
                     table.PrimaryKey("PK_abstractions", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_abstractions_abstraction_assignments_CTAbstractionAssignmentParentId",
+                        column: x => x.CTAbstractionAssignmentParentId,
+                        principalTable: "abstraction_assignments",
+                        principalColumn: "ParentId");
+                    table.ForeignKey(
                         name: "FK_abstractions_contracts_Id",
                         column: x => x.Id,
                         principalTable: "contracts",
@@ -167,20 +208,40 @@ namespace api.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "abstractions_assignments",
+                name: "abstraction_properties",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    AbstractionId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Type = table.Column<int>(type: "INTEGER", nullable: false),
+                    Required = table.Column<bool>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_abstraction_properties", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_abstraction_properties_abstractions_AbstractionId",
+                        column: x => x.AbstractionId,
+                        principalTable: "abstractions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_abstraction_properties_entities_Id",
+                        column: x => x.Id,
+                        principalTable: "entities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "interface_assignments",
                 columns: table => new
                 {
                     ParentId = table.Column<Guid>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_abstractions_assignments", x => x.ParentId);
-                    table.ForeignKey(
-                        name: "FK_abstractions_assignments_abstractions_ParentId",
-                        column: x => x.ParentId,
-                        principalTable: "abstractions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("PK_interface_assignments", x => x.ParentId);
                 });
 
             migrationBuilder.CreateTable(
@@ -199,24 +260,43 @@ namespace api.Migrations
                         principalTable: "contracts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_interfaces_interface_assignments_CTInterfaceAssignmentParentId",
+                        column: x => x.CTInterfaceAssignmentParentId,
+                        principalTable: "interface_assignments",
+                        principalColumn: "ParentId");
                 });
 
             migrationBuilder.CreateTable(
-                name: "interfaces_assignments",
+                name: "interface_properties",
                 columns: table => new
                 {
-                    ParentId = table.Column<Guid>(type: "TEXT", nullable: false)
+                    Id = table.Column<Guid>(type: "TEXT", nullable: false),
+                    InterfaceId = table.Column<Guid>(type: "TEXT", nullable: false),
+                    Type = table.Column<int>(type: "INTEGER", nullable: false),
+                    Required = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_interfaces_assignments", x => x.ParentId);
+                    table.PrimaryKey("PK_interface_properties", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_interfaces_assignments_interfaces_ParentId",
-                        column: x => x.ParentId,
+                        name: "FK_interface_properties_entities_Id",
+                        column: x => x.Id,
+                        principalTable: "entities",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_interface_properties_interfaces_InterfaceId",
+                        column: x => x.InterfaceId,
                         principalTable: "interfaces",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_abstraction_properties_AbstractionId",
+                table: "abstraction_properties",
+                column: "AbstractionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_abstractions_CTAbstractionAssignmentParentId",
@@ -229,9 +309,19 @@ namespace api.Migrations
                 column: "ObjectsId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_enumeration_properties_EnumerationId",
+                table: "enumeration_properties",
+                column: "EnumerationId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_history_EntityId",
                 table: "history",
                 column: "EntityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_interface_properties_InterfaceId",
+                table: "interface_properties",
+                column: "InterfaceId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_interfaces_CTInterfaceAssignmentParentId",
@@ -239,71 +329,86 @@ namespace api.Migrations
                 column: "CTInterfaceAssignmentParentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_properties_ObjectId",
-                table: "properties",
+                name: "IX_object_properties_ObjectId",
+                table: "object_properties",
                 column: "ObjectId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_abstractions_abstractions_assignments_CTAbstractionAssignmentParentId",
-                table: "abstractions",
-                column: "CTAbstractionAssignmentParentId",
-                principalTable: "abstractions_assignments",
-                principalColumn: "ParentId");
+                name: "FK_abstraction_assignments_abstractions_ParentId",
+                table: "abstraction_assignments",
+                column: "ParentId",
+                principalTable: "abstractions",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_interfaces_interfaces_assignments_CTInterfaceAssignmentParentId",
-                table: "interfaces",
-                column: "CTInterfaceAssignmentParentId",
-                principalTable: "interfaces_assignments",
-                principalColumn: "ParentId");
+                name: "FK_interface_assignments_interfaces_ParentId",
+                table: "interface_assignments",
+                column: "ParentId",
+                principalTable: "interfaces",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Cascade);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_abstractions_abstractions_assignments_CTAbstractionAssignmentParentId",
-                table: "abstractions");
+                name: "FK_abstraction_assignments_abstractions_ParentId",
+                table: "abstraction_assignments");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_contracts_entities_Id",
+                table: "contracts");
 
             migrationBuilder.DropForeignKey(
                 name: "FK_interfaces_contracts_Id",
                 table: "interfaces");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_interfaces_interfaces_assignments_CTInterfaceAssignmentParentId",
-                table: "interfaces");
+                name: "FK_interface_assignments_interfaces_ParentId",
+                table: "interface_assignments");
+
+            migrationBuilder.DropTable(
+                name: "abstraction_properties");
 
             migrationBuilder.DropTable(
                 name: "CTContractCTObject");
 
             migrationBuilder.DropTable(
-                name: "enumerations");
+                name: "enumeration_properties");
 
             migrationBuilder.DropTable(
                 name: "history");
 
             migrationBuilder.DropTable(
-                name: "properties");
+                name: "interface_properties");
+
+            migrationBuilder.DropTable(
+                name: "object_properties");
+
+            migrationBuilder.DropTable(
+                name: "enumerations");
 
             migrationBuilder.DropTable(
                 name: "objects");
 
             migrationBuilder.DropTable(
-                name: "abstractions_assignments");
-
-            migrationBuilder.DropTable(
                 name: "abstractions");
 
             migrationBuilder.DropTable(
-                name: "contracts");
+                name: "abstraction_assignments");
 
             migrationBuilder.DropTable(
                 name: "entities");
 
             migrationBuilder.DropTable(
-                name: "interfaces_assignments");
+                name: "contracts");
 
             migrationBuilder.DropTable(
                 name: "interfaces");
+
+            migrationBuilder.DropTable(
+                name: "interface_assignments");
         }
     }
 }

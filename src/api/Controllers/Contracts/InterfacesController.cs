@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using api.Requests;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers
@@ -20,8 +21,8 @@ namespace api.Controllers
             => Ok(await _mediator.Send(null, cancellationToken));
 
         [HttpPost()]
-        public async Task<IActionResult> Add(CancellationToken cancellationToken)
-            => Ok(await _mediator.Send(null, cancellationToken));
+        public async Task<IActionResult> Add([FromBody] AddInterfaceRequest request, CancellationToken cancellationToken)
+            => Ok(await _mediator.Send(request, cancellationToken));
 
         [HttpPut()]
         public async Task<IActionResult> Update(CancellationToken cancellationToken)

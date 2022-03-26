@@ -9,9 +9,9 @@ namespace api.Requests
 
     public class GetObjectsRequestHandler : IRequestHandler<GetObjectsRequest, IReadOnlyCollection<CTObject>>
     {
-        private readonly ObjzerContext _context;
+        private readonly DBContext _context;
 
-        public GetObjectsRequestHandler(ObjzerContext context)
+        public GetObjectsRequestHandler(DBContext context)
         {
             _context = context;
         }
