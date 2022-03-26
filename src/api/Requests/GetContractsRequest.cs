@@ -17,7 +17,7 @@ namespace api.Requests
         }
 
         public async Task<IReadOnlyCollection<CTContract>> Handle(GetContractsRequest request, CancellationToken cancellationToken)
-            => await _context.Contracts
+            => await _context.Set<CTContract>()
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);
     }

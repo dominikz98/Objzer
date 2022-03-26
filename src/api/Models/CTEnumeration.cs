@@ -2,11 +2,6 @@
 {
     public class CTEnumeration : CTContract
     {
-        public List<string> Values { get; set; }
-
-        public CTEnumeration()
-        {
-            Values = new List<string>();
-        }
+        public IList<string> Values { get; set; } = new List<string>();
     }
 }

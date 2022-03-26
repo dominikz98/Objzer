@@ -17,7 +17,8 @@ namespace api.Requests
         }
 
         public async Task<IReadOnlyCollection<CTObject>> Handle(GetObjectsRequest request, CancellationToken cancellationToken)
-            => await _context.Objects.Include(x => x.Interfaces)
+            => await _context.Set<CTObject>()
+                .Include(x => x.Contracts)
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);
     }

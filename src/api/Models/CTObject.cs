@@ -1,10 +1,8 @@
 ﻿namespace api.Models
 {
-    public class CTObject
+    public class CTObject : CTEntity
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
-        public List<CTContract> Interfaces { get; set; } = new List<CTContract>();
+        public IList<CTContract> Contracts { get; set; } = new List<CTContract>();
+        public IList<CTProperty> Properties { get; set; } = new List<CTProperty>();
     }
 }
