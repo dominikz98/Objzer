@@ -16,6 +16,13 @@
                 Status = RequestResultStatus.SUCCESS
             };
 
+        public static RequestResult<T> Null<T>()
+            => new()
+            {
+                Message = "Object not found!",
+                Status = RequestResultStatus.NOT_FOUND
+            };
+
         public static RequestResult<T> Error<T>(string error)
             => new()
             {
@@ -27,6 +34,7 @@
     public enum RequestResultStatus
     {
         SUCCESS,
-        VALIDATION_ERROR
+        VALIDATION_ERROR,
+        NOT_FOUND
     }
 }

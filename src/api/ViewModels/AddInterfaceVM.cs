@@ -23,8 +23,6 @@ namespace api.ViewModels
     public class AddInterfaceVMProfile : Profile
     {
         public AddInterfaceVMProfile()
-        {
-            CreateMap<AddInterfaceVM, AddInterfaceRequest>();
-        }
+           => CreateMap<AddInterfaceVM, AddInterfaceRequest>();
     }
 }

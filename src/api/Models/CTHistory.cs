@@ -7,9 +7,9 @@ namespace api.Models
     {
         public Guid Id { get; set; }
         public DateTime Timestamp { get; set; }
+        public HistoryType Type { get; set; }
         public Guid EntityId { get; set; }
-        public string? New { get; set; }
-        public string? Old { get; set; }
+        public string? Changes { get; set; }
         public CTEntity? Entity { get; set; }
     }
 
@@ -23,5 +23,12 @@ namespace api.Models
     {
         internal static void ApplyCTHistory(this ModelBuilder builder)
             => builder.ApplyConfiguration(new CTHistoryConfig());
+    }
+
+    public enum HistoryType
+    {
+        Add,
+        Update,
+        Delete
     }
 }

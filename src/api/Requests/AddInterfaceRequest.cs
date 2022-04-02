@@ -1,28 +1,32 @@
 ﻿using api.Core;
 using api.Models;
+using api.ViewModels;
+using AutoMapper;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Requests
 {
-    public class AddInterfaceRequest : IRequest<RequestResult<CTInterface>>
+    public class AddInterfaceRequest : IRequest<RequestResult<InterfaceVM>>
     {
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public List<Guid> ChildrenIds { get; set; } = new List<Guid>();
     }
 
-    public class AddInterfaceRequestHandler : IRequestHandler<AddInterfaceRequest, RequestResult<CTInterface>>
+    public class AddInterfaceRequestHandler : IRequestHandler<AddInterfaceRequest, RequestResult<InterfaceVM>>
     {
+        private readonly IMapper _mapper;
         private readonly DBContext _context;
-
-        public AddInterfaceRequestHandler(DBContext context)
+        
+        public AddInterfaceRequestHandler(IMapper mapper, DBContext context)
         {
+            _mapper = mapper;
             _context = context;
         }
 
-        public async Task<RequestResult<CTInterface>> Handle(AddInterfaceRequest request, CancellationToken cancellationToken)
+        public async Task<RequestResult<InterfaceVM>> Handle(AddInterfaceRequest request, CancellationToken cancellationToken)
         {
             // validate
             var alreadyExists = await _context.Set<CTInterface>()
@@ -30,7 +34,7 @@ namespace api.Requests
                 .AnyAsync(cancellationToken);
 
             if (alreadyExists)
-                return RequestResult.Error<CTInterface>("Interface with same name already exists!");
+                return RequestResult.Error<InterfaceVM>("Interface with same name already exists!");
 
             // create new interface
             var @interface = new CTInterface()
@@ -47,20 +51,20 @@ namespace api.Requests
                 .Where(x => request.ChildrenIds.Contains(x.Id))
                 .ToListAsync(cancellationToken);
 
-                var assignment = new CTInterfaceAssignment()
+                @interface.Implementations = new CTInterfaceAssignment()
                 {
                     ParentId = @interface.Id,
                     Parent = @interface,
-                    Children = children
+                    References = children
                 };
-                @interface.Implementations.Add(assignment);
             }
 
             // save changes
             await _context.AddAsync(@interface, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
 
-            return RequestResult.Success(@interface);
+            var vm = _mapper.Map<InterfaceVM>(@interface);
+            return RequestResult.Success(vm);
         }
     }
 }

@@ -6,24 +6,29 @@ namespace api.Models
     public class CTInterface : CTEntity
     {
         public IList<CTObject> Objects { get; set; } = new List<CTObject>();
-        public IList<CTInterfaceAssignment> Implementations { get; set; } = new List<CTInterfaceAssignment>();
+        public CTInterfaceAssignment Implementations { get; set; } = new CTInterfaceAssignment();
         public IList<CTInterfaceProperty> Properties { get; set; } = new List<CTInterfaceProperty>();
     }
 
     internal class CTInterfaceConfig : IEntityTypeConfiguration<CTInterface>
     {
         public void Configure(EntityTypeBuilder<CTInterface> builder)
-            => builder.ToTable("interfaces")
+        {
+            builder.ToTable("interfaces")
                 .HasMany(x => x.Properties)
                 .WithOne(x => x.Interface)
                 .HasForeignKey(x => x.InterfaceId);
+
+            builder.HasOne(x => x.Implementations)
+                .WithOne(x => x.Parent);
+        }
     }
 
     public class CTInterfaceAssignment
     {
         public Guid ParentId { get; set; }
         public CTInterface? Parent { get; set; }
-        public IList<CTInterface> Children { get; set; } = new List<CTInterface>();
+        public IList<CTInterface> References { get; set; } = new List<CTInterface>();
     }
 
     internal class CTInterfaceAssignmentConfig : IEntityTypeConfiguration<CTInterfaceAssignment>
@@ -33,9 +38,8 @@ namespace api.Models
             builder.ToTable("interface_assignments")
                 .HasKey(x => x.ParentId);
 
-            builder.HasOne(x => x.Parent)
-                .WithMany(x => x.Implementations)
-                .HasForeignKey(x => x.ParentId);
+            builder.HasMany(x => x.References)
+                .WithOne(x => x.Implementations);
         }
     }
 

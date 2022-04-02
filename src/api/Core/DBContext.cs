@@ -22,10 +22,23 @@ namespace api.Core
             builder.ApplyCTAbstraction();
             builder.ApplyCTInterface();
             builder.ApplyCTObject();
-            builder.ApplyCTContract();
             builder.ApplyCTEntity();
             builder.ApplyCTHistory();
             builder.ApplyCTEnumeration();
+        }
+
+        public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
+        {
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                var entity = HistoryFactory.Create(entry);
+                if (entity is null)
+                    continue;
+
+                await AddAsync(entity, cancellationToken);
+            }
+
+            return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
     }
 }

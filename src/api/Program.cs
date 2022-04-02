@@ -1,20 +1,18 @@
 using api.Core;
-using api.Requests;
+using api.ViewModels;
 using FluentValidation.AspNetCore;
 using MediatR;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMediatR(typeof(Program));
 builder.Services.AddDbContext<DBContext>();
 builder.Services.AddCors();
-builder.Services.AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<AddInterfaceValidator>());
+builder.Services.AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<AddInterfaceVMValidator>());
 builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();

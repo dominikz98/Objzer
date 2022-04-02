@@ -23,9 +23,9 @@ namespace api.Controllers
 
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
-            => Ok(await _mediator.Send(null, cancellationToken));
+            => Ok(await _mediator.Send(new GetInterfaceRequest(id), cancellationToken));
 
-        [HttpPost()]
+        [HttpPost]
         public async Task<IActionResult> Add([FromBody] AddInterfaceVM vm, CancellationToken cancellationToken)
         {
             var request = _mapper.Map<AddInterfaceRequest>(vm);
@@ -39,12 +39,12 @@ namespace api.Controllers
             };
         }
 
-        [HttpPut()]
-        public async Task<IActionResult> Update(CancellationToken cancellationToken)
-            => Ok(await _mediator.Send(null, cancellationToken));
+        //[HttpPut]
+        //public async Task<IActionResult> Update(CancellationToken cancellationToken)
+        //    => Ok(await _mediator.Send(null, cancellationToken));
 
-        [HttpPut()]
-        public async Task<IActionResult> Delete(CancellationToken cancellationToken)
-            => Ok(await _mediator.Send(null, cancellationToken));
+        //[HttpDelete]
+        //public async Task<IActionResult> Delete(CancellationToken cancellationToken)
+        //    => Ok(await _mediator.Send(null, cancellationToken));
     }
 }
