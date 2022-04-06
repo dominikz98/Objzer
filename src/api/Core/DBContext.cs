@@ -22,7 +22,6 @@ namespace api.Core
             builder.ApplyCTAbstraction();
             builder.ApplyCTInterface();
             builder.ApplyCTObject();
-            builder.ApplyCTEntity();
             builder.ApplyCTHistory();
             builder.ApplyCTEnumeration();
         }

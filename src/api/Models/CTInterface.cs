@@ -37,9 +37,6 @@ namespace api.Models
         {
             builder.ToTable("interface_assignments")
                 .HasKey(x => x.ParentId);
-
-            builder.HasMany(x => x.References)
-                .WithOne(x => x.Implementations);
         }
     }
 

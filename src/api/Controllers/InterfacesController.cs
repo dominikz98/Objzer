@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace api.Controllers
 {
     [ApiController]
-    [Route("contracts/[controller]")]
+    [Route("[controller]")]
     public class InterfacesController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -19,6 +19,10 @@ namespace api.Controllers
             _mediator = mediator;
             _mapper = mapper;
         }
+
+        [HttpGet()]
+        public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+            => Ok(await _mediator.Send(new GetAllInterfacesRequest(), cancellationToken));
 
 
         [HttpGet("{id:guid}")]

@@ -13,10 +13,16 @@ namespace api.Models
     internal class CTAbstractionConfig : IEntityTypeConfiguration<CTAbstraction>
     {
         public void Configure(EntityTypeBuilder<CTAbstraction> builder)
-            => builder.ToTable("abstractions")
+        {
+            builder.ToTable("abstractions")
                 .HasMany(x => x.Properties)
                 .WithOne(x => x.Abstraction)
                 .HasForeignKey(x => x.AbstractionId);
+
+            builder.HasMany(x => x.Inheritances)
+                .WithOne(x => x.Parent)
+                .HasForeignKey(x => x.ParentId);
+        }
     }
 
     public class CTAbstractionAssignment
@@ -29,14 +35,8 @@ namespace api.Models
     internal class CTAbstractionAssignmentConfig : IEntityTypeConfiguration<CTAbstractionAssignment>
     {
         public void Configure(EntityTypeBuilder<CTAbstractionAssignment> builder)
-        {
-            builder.ToTable("abstraction_assignments")
+            => builder.ToTable("abstraction_assignments")
                 .HasKey(x => x.ParentId);
-
-            builder.HasOne(x => x.Parent)
-                .WithMany(x => x.Inheritances)
-                .HasForeignKey(x => x.ParentId);
-        }
     }
 
     public class CTAbstractionProperty : CTEntity
