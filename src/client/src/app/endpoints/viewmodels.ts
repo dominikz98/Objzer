@@ -1,5 +1,7 @@
-export class ObjectVM {
+export class ListInterfaceVM {
     id: string;
     name: string;
-    description: string;
+    historyCount: number;
+    propertiesCount: number;
+    objectsCount: number;
 }

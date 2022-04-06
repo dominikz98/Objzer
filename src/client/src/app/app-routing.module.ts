@@ -8,8 +8,8 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
-    path: 'objects',
-    loadChildren: () => import('./objects/objects.module').then( m => m.ObjectsPageModule)
+    path: 'catalogue',
+    loadChildren: () => import('./catalogue/catalogue.module').then( m => m.CataloguePageModule)
   },
   {
     path: 'history',

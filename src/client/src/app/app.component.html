@@ -7,7 +7,8 @@
           <ion-note>dominikzettl@gmx.net</ion-note>
 
           <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages; let i = index">
-            <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false" routerLinkActive="selected">
+            <ion-item routerDirection="root" [routerLink]="[p.url]" lines="none" detail="false"
+              routerLinkActive="selected">
               <ion-icon slot="start" [ios]="p.icon + '-outline'" [md]="p.icon + '-sharp'"></ion-icon>
               <ion-label>{{ p.title }}</ion-label>
             </ion-item>
@@ -15,6 +16,29 @@
         </ion-list>
       </ion-content>
     </ion-menu>
-    <ion-router-outlet id="main-content"></ion-router-outlet>
+
+    <ion-grid id="main-content">
+      <ion-row>
+        <ion-breadcrumbs>
+          <ion-breadcrumb href="#">
+            Home
+          </ion-breadcrumb>
+
+          <ion-breadcrumb *ngFor="let s of urlsegments" [href]="[s.href]">
+            {{ s.name }}
+          </ion-breadcrumb>
+
+        </ion-breadcrumbs>
+
+      </ion-row>
+
+      <ion-row class="full-height">
+        <ion-col>
+          <ion-router-outlet>
+
+          </ion-router-outlet>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
   </ion-split-pane>
 </ion-app>
