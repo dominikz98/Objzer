@@ -8,6 +8,7 @@ namespace api.ViewModels
     {
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
+        public List<AddPropertyVM> Properties { get; set; } = new List<AddPropertyVM>();
         public List<Guid> ChildrenIds { get; set; } = new List<Guid>();
     }
 

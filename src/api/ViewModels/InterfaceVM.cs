@@ -7,7 +7,7 @@ namespace api.ViewModels
     {
         public Guid Id { get; set; }
         public List<HistoryVM> History { get; set; } = new List<HistoryVM>();
-        public List<PropertyVM> Properties { get; set; } = new List<PropertyVM>();
+        public new List<PropertyVM> Properties { get; set; } = new List<PropertyVM>();
         public List<ReferenceVM> Implementations { get; set; } = new List<ReferenceVM>();
         public List<ReferenceVM> Objects { get; set; } = new List<ReferenceVM>();
     }

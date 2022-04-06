@@ -9,7 +9,7 @@ namespace api.Core
     {
         public static CTHistory? Create(EntityEntry entry)
         {
-            if (!entry.Entity.GetType().IsAssignableFrom(typeof(CTEntity)))
+            if (!entry.Entity.GetType().IsSubclassOf(typeof(CTEntity)))
                 return null;
 
             HistoryType type;
@@ -51,20 +51,27 @@ namespace api.Core
             var changes = new List<Change>();
             foreach (var property in entry.Properties)
             {
-                if (!property.IsModified)
+                if (type == HistoryType.Update && !property.IsModified)
                     continue;
 
-                if (!IsSimpleType(typeof(CTEntity)))
+                if (property.Metadata?.PropertyInfo?.PropertyType is null)
+                    continue;
+
+                if (!IsSimpleType(property.Metadata.PropertyInfo.PropertyType))
+                    continue;
+
+                if (type == HistoryType.Add && property.CurrentValue is null)
                     continue;
 
                 changes.Add(new Change()
                 {
+                    Name = property.Metadata.Name,
                     New = property.CurrentValue,
                     Old = type == HistoryType.Update ? property.CurrentValue : null
                 });
             }
 
-            return JsonSerializer.Serialize(changes);
+            return JsonSerializer.Serialize<List<Change>>(changes, new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
         }
 
         private static bool IsSimpleType(Type type)
@@ -87,6 +94,7 @@ namespace api.Core
 
         class Change
         {
+            public string Name { get; set; } = string.Empty;
             public object? New { get; set; }
             public object? Old { get; set; }
         }

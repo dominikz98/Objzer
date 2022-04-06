@@ -28,15 +28,19 @@ namespace api.Core
 
         public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
+            var toAdd = new List<CTHistory>();
             foreach (var entry in ChangeTracker.Entries())
             {
                 var entity = HistoryFactory.Create(entry);
                 if (entity is null)
                     continue;
 
-                await AddAsync(entity, cancellationToken);
+                toAdd.Add(entity);
             }
 
+            await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+
+            await AddRangeAsync(toAdd, cancellationToken);
             return await base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
     }

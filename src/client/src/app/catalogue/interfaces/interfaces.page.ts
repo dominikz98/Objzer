@@ -9,14 +9,14 @@ import { ListInterfaceVM } from 'src/app/endpoints/viewmodels';
 })
 export class InterfacesPage implements OnInit {
 
-  public objects: ListInterfaceVM[];
+  public interfaces: ListInterfaceVM[];
 
   constructor(private endpoints: InterfacesEndpoints) { }
 
   ngOnInit() {
     this.endpoints.get()
       .subscribe((data: ListInterfaceVM[]) => {
-        this.objects = data;
+        this.interfaces = data;
       })
   }
 

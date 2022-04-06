@@ -13,13 +13,14 @@ namespace api.Requests
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public List<Guid> ChildrenIds { get; set; } = new List<Guid>();
+        public List<CTInterfaceProperty> Properties { get; set; } = new List<CTInterfaceProperty>();
     }
 
     public class AddInterfaceRequestHandler : IRequestHandler<AddInterfaceRequest, RequestResult<InterfaceVM>>
     {
         private readonly IMapper _mapper;
         private readonly DBContext _context;
-        
+
         public AddInterfaceRequestHandler(IMapper mapper, DBContext context)
         {
             _mapper = mapper;
@@ -57,6 +58,14 @@ namespace api.Requests
                     Parent = @interface,
                     References = children
                 };
+            }
+
+            // attach properties
+            foreach (var property in request.Properties)
+            {
+                property.Id = Guid.NewGuid();
+                property.InterfaceId = @interface.Id;
+                @interface.Properties.Add(property);
             }
 
             // save changes
