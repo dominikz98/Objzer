@@ -1,7 +1,0 @@
-{
-  "name": "objzer",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular"
-}
