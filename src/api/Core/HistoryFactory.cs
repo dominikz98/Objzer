@@ -71,7 +71,7 @@ namespace api.Core
                 });
             }
 
-            return JsonSerializer.Serialize<List<Change>>(changes, new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            return JsonSerializer.Serialize(changes, new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
         }
 
         private static bool IsSimpleType(Type type)

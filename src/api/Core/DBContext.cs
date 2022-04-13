@@ -1,5 +1,6 @@
 ﻿using api.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace api.Core
 {
@@ -19,12 +20,35 @@ namespace api.Core
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            ApplyCTEntityQueryFilter(builder);
             builder.ApplyCTAbstraction();
             builder.ApplyCTInterface();
             builder.ApplyCTObject();
             builder.ApplyCTHistory();
             builder.ApplyCTEnumeration();
         }
+
+        internal void ApplyCTEntityQueryFilter(ModelBuilder builder)
+        {
+            var setter = typeof(CTEntity).GetMethod(nameof(SetQueryFilter), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+            if (setter == null)
+                throw new MissingMethodException(nameof(DBContext), nameof(SetQueryFilter));
+
+            var entities = typeof(CTEntity)
+                .Assembly
+                .GetTypes()
+                .Where(x => x.IsSubclassOf(typeof(CTEntity)))
+                .Where(x => !x.IsAbstract);
+
+            foreach (var entity in entities)
+            {
+                var generic = setter.MakeGenericMethod(entity);
+                generic.Invoke(null, new object[] { builder });
+            }
+        }
+
+        private static void SetQueryFilter<T>(ModelBuilder modelBuilder) where T : CTEntity
+            => modelBuilder.Entity<T>().HasQueryFilter(x => !x.Deleted);
 
         public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
         {
