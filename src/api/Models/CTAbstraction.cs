@@ -3,8 +3,13 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace api.Models
 {
-    public class CTAbstraction : CTEntity
+    public class CTAbstraction : IEntity
     {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public bool Deleted { get; set; }
+        public IList<CTHistory> History { get; set; } = new List<CTHistory>();
         public IList<CTObject> Objects { get; set; } = new List<CTObject>();
         public IList<CTAbstractionAssignment> Inheritances { get; set; } = new List<CTAbstractionAssignment>();
         public IList<CTAbstractionProperty> Properties { get; set; } = new List<CTAbstractionProperty>();
@@ -22,35 +27,51 @@ namespace api.Models
             builder.HasMany(x => x.Inheritances)
                 .WithOne(x => x.Parent)
                 .HasForeignKey(x => x.ParentId);
+
+            builder.HasIndex(x => x.Deleted);
         }
     }
 
-    public class CTAbstractionAssignment
+    public class CTAbstractionAssignment : IDeletable
     {
         public Guid ParentId { get; set; }
         public CTAbstraction? Parent { get; set; }
         public IList<CTAbstraction> Children { get; set; } = new List<CTAbstraction>();
+        public bool Deleted { get; set; }
     }
 
     internal class CTAbstractionAssignmentConfig : IEntityTypeConfiguration<CTAbstractionAssignment>
     {
         public void Configure(EntityTypeBuilder<CTAbstractionAssignment> builder)
-            => builder.ToTable("abstraction_assignments")
+        {
+            builder.ToTable("abstraction_assignments")
                 .HasKey(x => x.ParentId);
+
+            builder.HasIndex(x => x.Deleted);
+        }
     }
 
-    public class CTAbstractionProperty : CTEntity
+    public class CTAbstractionProperty : IEntity
     {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public bool Deleted { get; set; }
         public Guid AbstractionId { get; set; }
         public CTAbstraction? Abstraction { get; set; }
         public PropertyTypes Type { get; set; } = PropertyTypes.String;
         public bool Required { get; set; } = true;
+        public IList<CTHistory> History { get; set; } = new List<CTHistory>();
     }
 
     internal class CTAbstractionPropertyConfig : IEntityTypeConfiguration<CTAbstractionProperty>
     {
         public void Configure(EntityTypeBuilder<CTAbstractionProperty> builder)
-            => builder.ToTable("abstraction_properties");
+        {
+            builder.ToTable("abstraction_properties");
+            builder.HasIndex(x => x.AbstractionId);
+            builder.HasIndex(x => x.Deleted);
+        }
     }
 
     internal static class CTAbstractionExtensions

@@ -10,13 +10,13 @@ namespace api.Models
         public HistoryType Type { get; set; }
         public Guid EntityId { get; set; }
         public string? Changes { get; set; }
-        public CTEntity? Entity { get; set; }
     }
 
     internal class CTHistoryConfig : IEntityTypeConfiguration<CTHistory>
     {
         public void Configure(EntityTypeBuilder<CTHistory> builder)
-            => builder.ToTable("history");
+            => builder.ToTable("history")
+            .HasIndex(x => x.EntityId);
     }
 
     internal static class CTHistoryExtensions

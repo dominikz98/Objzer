@@ -30,14 +30,14 @@ namespace api.Core
 
         internal void ApplyCTEntityQueryFilter(ModelBuilder builder)
         {
-            var setter = typeof(CTEntity).GetMethod(nameof(SetQueryFilter), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
+            var setter = GetType().GetMethod(nameof(SetQueryFilter), BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Static);
             if (setter == null)
                 throw new MissingMethodException(nameof(DBContext), nameof(SetQueryFilter));
 
-            var entities = typeof(CTEntity)
+            var entities = typeof(IDeletable)
                 .Assembly
                 .GetTypes()
-                .Where(x => x.IsSubclassOf(typeof(CTEntity)))
+                .Where(x => x.GetInterface(nameof(IDeletable)) != null)
                 .Where(x => !x.IsAbstract);
 
             foreach (var entity in entities)
@@ -47,7 +47,7 @@ namespace api.Core
             }
         }
 
-        private static void SetQueryFilter<T>(ModelBuilder modelBuilder) where T : CTEntity
+        private static void SetQueryFilter<T>(ModelBuilder modelBuilder) where T : class, IDeletable
             => modelBuilder.Entity<T>().HasQueryFilter(x => !x.Deleted);
 
         public override async Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)

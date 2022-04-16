@@ -9,7 +9,7 @@ namespace api.Core
     {
         public static CTHistory? Create(EntityEntry entry)
         {
-            if (!entry.Entity.GetType().IsSubclassOf(typeof(CTEntity)))
+            if (entry.Entity.GetType().GetInterface(nameof(IEntity)) is null)
                 return null;
 
             HistoryType type;
@@ -39,7 +39,7 @@ namespace api.Core
             return new CTHistory()
             {
                 Id = Guid.NewGuid(),
-                EntityId = ((CTEntity)entry.Entity).Id,
+                EntityId = ((IEntity)entry.Entity).Id,
                 Timestamp = DateTime.UtcNow,
                 Type = type,
                 Changes = changes

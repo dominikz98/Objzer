@@ -3,10 +3,15 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace api.Models
 {
-    public class CTInterface : CTEntity
+    public class CTInterface : IEntity
     {
-        public IList<CTObject> Objects { get; set; } = new List<CTObject>();
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public bool Deleted { get; set; }
         public CTInterfaceAssignment Implementations { get; set; } = new CTInterfaceAssignment();
+        public IList<CTObject> Objects { get; set; } = new List<CTObject>();
+        public IList<CTHistory> History { get; set; } = new List<CTHistory>();
         public IList<CTInterfaceProperty> Properties { get; set; } = new List<CTInterfaceProperty>();
     }
 
@@ -21,37 +26,50 @@ namespace api.Models
 
             builder.HasOne(x => x.Implementations)
                 .WithOne(x => x.Parent);
+
+            builder.HasIndex(x => x.Deleted);
         }
     }
 
-    public class CTInterfaceAssignment
+    public class CTInterfaceAssignment : IDeletable
     {
         public Guid ParentId { get; set; }
         public CTInterface? Parent { get; set; }
         public IList<CTInterface> References { get; set; } = new List<CTInterface>();
+        public bool Deleted { get; set; }
     }
 
     internal class CTInterfaceAssignmentConfig : IEntityTypeConfiguration<CTInterfaceAssignment>
     {
         public void Configure(EntityTypeBuilder<CTInterfaceAssignment> builder)
         {
-            builder.ToTable("interface_assignments")
-                .HasKey(x => x.ParentId);
+            builder.ToTable("interface_assignments");
+            builder.HasKey(x => x.ParentId);
+            builder.HasIndex(x => x.Deleted);
         }
     }
 
-    public class CTInterfaceProperty : CTEntity
+    public class CTInterfaceProperty : IEntity
     {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public bool Deleted { get; set; }
         public Guid InterfaceId { get; set; }
         public CTInterface? Interface { get; set; }
         public PropertyTypes Type { get; set; } = PropertyTypes.String;
         public bool Required { get; set; } = true;
+        public IList<CTHistory> History { get; set; } = new List<CTHistory>();
     }
 
     internal class CTInterfacePropertyConfig : IEntityTypeConfiguration<CTInterfaceProperty>
     {
         public void Configure(EntityTypeBuilder<CTInterfaceProperty> builder)
-            => builder.ToTable("interface_properties");
+        {
+            builder.ToTable("interface_properties");
+            builder.HasIndex(x => x.InterfaceId);
+            builder.HasIndex(x => x.Deleted);
+        }
     }
 
     internal static class CTInterfaceExtensions
