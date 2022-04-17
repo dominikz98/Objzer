@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { InterfacesEndpoints } from 'src/app/endpoints/interfaces.endpoints';
-import { ListInterfaceVM } from 'src/app/endpoints/viewmodels';
+import { ListInterfaceVM } from 'src/app/models/viewmodels';
 
 @Component({
   selector: 'app-interfaces',

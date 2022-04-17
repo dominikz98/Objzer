@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { InterfacesEndpoints } from 'src/app/endpoints/interfaces.endpoints';
-import { ListInterfaceVM } from 'src/app/endpoints/viewmodels';
+import { ListInterfaceVM } from 'src/app/models/viewmodels';
 import { EditPropertyModalPage } from 'src/app/modals/edit-property-modal/edit-property-modal.page';
 import { PropertyModel } from 'src/app/models/property.model';
 import { InterfaceModel } from '../../../models/interface.model';
@@ -42,4 +41,25 @@ export class NewPage implements OnInit {
 
     return await modal.present();
   }
+
+  onSave() {
+    if (this.model.form.invalid || !this.model.form.touched) {
+      return;
+    }
+
+    console.log('Fillup');
+    this.model.fillUp();
+    console.log('Create');
+    this.endpoints.create(this.model.value).subscribe();
+    console.log('Finished');
+  }
+
+  // findInvalidControls() {
+  //   const controls = this.model.form.controls;
+  //   for (const name in controls) {
+  //     if (controls[name].invalid) {
+  //       console.log(`Errors: ${name}`)
+  //     }
+  //   }
+  // }
 }

@@ -39,6 +39,7 @@ namespace api.Core
             return new CTHistory()
             {
                 Id = Guid.NewGuid(),
+                Entity = entry.Entity.GetType().Name,
                 EntityId = ((IEntity)entry.Entity).Id,
                 Timestamp = DateTime.UtcNow,
                 Type = type,

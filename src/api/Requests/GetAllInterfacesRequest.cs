@@ -1,6 +1,6 @@
 ﻿using api.Core;
 using api.Models;
-using api.ViewModels;
+using api.ViewModels.Interface;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,10 +10,12 @@ namespace api.Requests
 
     public class GetContractsRequestHandler : IRequestHandler<GetAllInterfacesRequest, IReadOnlyCollection<ListInterfaceVM>>
     {
+        private readonly IHistoryLoader _historyLoader;
         private readonly DBContext _context;
 
-        public GetContractsRequestHandler(DBContext context)
+        public GetContractsRequestHandler(IHistoryLoader historyLoader, DBContext context)
         {
+            _historyLoader = historyLoader;
             _context = context;
         }
 
@@ -21,42 +23,52 @@ namespace api.Requests
         {
             // load from db
             var interfaces = await _context.Set<CTInterface>()
-                .Select(x => new
+                .Select(x => new InterfaceDTO
                 {
-                    x.Id,
-                    x.Name,
-                    x.Description,
-                    History = x.History.Select(x => x.Timestamp),
-                    PropertiesHistories = x.Properties.Select(x => x.History.Select(x => x.Timestamp)),
-                    Objects = x.Objects.Count,
-                    Properties = x.Properties.Count
+                    Id = x.Id,
+                    Name = x.Name,
+                    Description = x.Description,
+                    Properties = x.Properties.Select(y => new MinimalDTO { Id = y.Id, Name = y.Name })
                 })
                 .ToListAsync(cancellationToken);
 
+            // load history
+            var history = await _historyLoader.QueryAll(interfaces)
+                .Select(x => x.Timestamp)
+                .ToListAsync(cancellationToken);
+
+            // create viewmodels
             var result = new List<ListInterfaceVM>();
             foreach (var @interface in interfaces)
             {
-                // calculate history count and last modification timestamp
-                var counter = @interface.History.Count();
-                var modifications = @interface.History.ToList();
-                foreach (var propHistory in @interface.PropertiesHistories)
-                {
-                    modifications.AddRange(propHistory);
-                    counter += propHistory.Count();
-                }
 
                 result.Add(new ListInterfaceVM()
                 {
                     Id = @interface.Id,
                     Name = @interface.Name,
-                    Description = @interface.Description[..25],
-                    HistoryCount = counter,
-                    LastModified = modifications.Max(),
-                    ObjectsCount = @interface.Objects,
-                    PropertiesCount = @interface.Properties
+                    Description = @interface.Description,
+                    LastModified = history.Max(),
+                    HistoryCount = history.Count,
+                    PropertiesCount = @interface.Properties.Count()
                 });
             }
             return result;
+        }
+
+        class InterfaceDTO : IEntity
+        {
+            public Guid Id { get; set; }
+            public string Name { get; set; } = string.Empty;
+            public string Description { get; set; } = string.Empty;
+            public bool Deleted { get; set; }
+            public IEnumerable<MinimalDTO> Properties { get; set; } = new List<MinimalDTO>();
+        }
+
+        class MinimalDTO : IEntity
+        {
+            public Guid Id { get; set; }
+            public string Name { get; set; } = string.Empty;
+            public bool Deleted { get; set; }
         }
     }
 }

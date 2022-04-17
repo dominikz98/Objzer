@@ -7,7 +7,8 @@ import { IonicModule } from '@ionic/angular';
 import { NewPageRoutingModule } from './new-routing.module';
 
 import { NewPage } from './new.page';
-import { EditPropertyModalPageModule } from 'src/app/modals/edit-property-modal/edit-property-modal.module';
+import { PipesModule } from 'src/app/pipes/pipes.module';
+import { ModalsModule } from 'src/app/modals/modals.module';
 
 @NgModule({
   imports: [
@@ -16,7 +17,8 @@ import { EditPropertyModalPageModule } from 'src/app/modals/edit-property-modal/
     IonicModule,
     NewPageRoutingModule,
     ReactiveFormsModule,
-    EditPropertyModalPageModule
+    ModalsModule,
+    PipesModule
   ],
   declarations: [NewPage]
 })

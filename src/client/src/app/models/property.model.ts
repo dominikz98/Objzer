@@ -1,5 +1,5 @@
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { AddPropertyVM } from "../endpoints/viewmodels";
+import { AddPropertyVM } from "./viewmodels";
 
 export class PropertyModel {
     public form: FormGroup;

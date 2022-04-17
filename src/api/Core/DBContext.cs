@@ -21,11 +21,11 @@ namespace api.Core
         protected override void OnModelCreating(ModelBuilder builder)
         {
             ApplyCTEntityQueryFilter(builder);
-            builder.ApplyCTAbstraction();
+            //builder.ApplyCTAbstraction();
             builder.ApplyCTInterface();
-            builder.ApplyCTObject();
+            //builder.ApplyCTObject();
             builder.ApplyCTHistory();
-            builder.ApplyCTEnumeration();
+            //builder.ApplyCTEnumeration();
         }
 
         internal void ApplyCTEntityQueryFilter(ModelBuilder builder)

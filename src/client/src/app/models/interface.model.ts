@@ -1,5 +1,5 @@
-import { FormArray, FormControl, FormGroup } from "@angular/forms";
-import { AddInterfaceVM, AddPropertyVM } from "../endpoints/viewmodels";
+import { FormArray, FormControl, FormGroup, Validators } from "@angular/forms";
+import { AddInterfaceVM } from "./viewmodels";
 import { PropertyModel } from "./property.model";
 
 export class InterfaceModel {
@@ -13,8 +13,14 @@ export class InterfaceModel {
         }
 
         this.form = new FormGroup({
-            name: new FormControl(this.value.name),
-            description: new FormControl(this.value.description),
+            name: new FormControl(this.value.name, [
+                Validators.required,
+                Validators.minLength(1)
+            ]),
+            description: new FormControl(this.value.description, [
+                Validators.required,
+                Validators.minLength(1)
+            ]),
             properties: new FormArray([])
         });
     }
@@ -27,5 +33,10 @@ export class InterfaceModel {
             this.value.properties = [];
         }
         this.value.properties.push(value.value)
+    }
+
+    public fillUp() {
+        this.value.name = this.form.value.name;
+        this.value.description = this.form.value.description;
     }
 }

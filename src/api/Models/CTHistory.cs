@@ -8,6 +8,7 @@ namespace api.Models
         public Guid Id { get; set; }
         public DateTime Timestamp { get; set; }
         public HistoryType Type { get; set; }
+        public string Entity { get; set; } = string.Empty;
         public Guid EntityId { get; set; }
         public string? Changes { get; set; }
     }

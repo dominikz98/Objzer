@@ -1,4 +1,4 @@
-﻿namespace api.ViewModels
+﻿namespace api.ViewModels.Interface
 {
     public class ListInterfaceVM
     {
@@ -8,6 +8,5 @@
         public DateTime LastModified { get; set; }
         public int HistoryCount { get; set; }
         public int PropertiesCount { get; set; }
-        public int ObjectsCount { get; set; }
     }
 }

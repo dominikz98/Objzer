@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiClient } from './apiclient';
-import { EnumVM } from './viewmodels';
+import { EnumVM } from '../models/viewmodels';
 
 
 @Injectable({

@@ -2,7 +2,7 @@
 using AutoMapper;
 using FluentValidation;
 
-namespace api.ViewModels
+namespace api.ViewModels.Interface
 {
     public class AddInterfaceVM
     {

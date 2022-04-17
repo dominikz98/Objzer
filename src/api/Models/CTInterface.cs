@@ -10,9 +10,8 @@ namespace api.Models
         public string Description { get; set; } = string.Empty;
         public bool Deleted { get; set; }
         public CTInterfaceAssignment Implementations { get; set; } = new CTInterfaceAssignment();
-        public IList<CTObject> Objects { get; set; } = new List<CTObject>();
-        public IList<CTHistory> History { get; set; } = new List<CTHistory>();
         public IList<CTInterfaceProperty> Properties { get; set; } = new List<CTInterfaceProperty>();
+        public IList<CTHistory> History { get; set; } = new List<CTHistory>();
     }
 
     internal class CTInterfaceConfig : IEntityTypeConfiguration<CTInterface>
@@ -27,6 +26,7 @@ namespace api.Models
             builder.HasOne(x => x.Implementations)
                 .WithOne(x => x.Parent);
 
+            builder.Ignore(x => x.History);
             builder.HasIndex(x => x.Deleted);
         }
     }
@@ -53,13 +53,12 @@ namespace api.Models
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
+        public string? Description { get; set; }
         public bool Deleted { get; set; }
         public Guid InterfaceId { get; set; }
         public CTInterface? Interface { get; set; }
         public PropertyType Type { get; set; } = PropertyType.String;
         public bool Required { get; set; } = true;
-        public IList<CTHistory> History { get; set; } = new List<CTHistory>();
     }
 
     internal class CTInterfacePropertyConfig : IEntityTypeConfiguration<CTInterfaceProperty>

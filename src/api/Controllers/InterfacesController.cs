@@ -1,6 +1,6 @@
 ﻿using api.Core;
 using api.Requests;
-using api.ViewModels;
+using api.ViewModels.Interface;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

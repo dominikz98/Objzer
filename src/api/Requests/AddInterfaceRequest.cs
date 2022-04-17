@@ -1,6 +1,6 @@
 ﻿using api.Core;
 using api.Models;
-using api.ViewModels;
+using api.ViewModels.Interface;
 using AutoMapper;
 using FluentValidation;
 using MediatR;
@@ -18,11 +18,13 @@ namespace api.Requests
 
     public class AddInterfaceRequestHandler : IRequestHandler<AddInterfaceRequest, RequestResult<InterfaceVM>>
     {
+        private readonly IHistoryLoader _historyLoader;
         private readonly IMapper _mapper;
         private readonly DBContext _context;
 
-        public AddInterfaceRequestHandler(IMapper mapper, DBContext context)
+        public AddInterfaceRequestHandler(IHistoryLoader historyLoader, IMapper mapper, DBContext context)
         {
+            _historyLoader = historyLoader;
             _mapper = mapper;
             _context = context;
         }
@@ -71,6 +73,9 @@ namespace api.Requests
             // save changes
             await _context.AddAsync(@interface, cancellationToken);
             await _context.SaveChangesAsync(cancellationToken);
+
+            // attach history
+            @interface.History = await _historyLoader.Load(@interface, true, cancellationToken);
 
             var vm = _mapper.Map<InterfaceVM>(@interface);
             return RequestResult.Success(vm);

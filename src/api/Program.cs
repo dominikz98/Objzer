@@ -1,5 +1,5 @@
 using api.Core;
-using api.ViewModels;
+using api.ViewModels.Interface;
 using FluentValidation.AspNetCore;
 using MediatR;
 
@@ -11,6 +11,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddMediatR(typeof(Program));
 builder.Services.AddDbContext<DBContext>();
+builder.Services.AddScoped<IHistoryLoader, HistoryLoader>();
 builder.Services.AddCors();
 builder.Services.AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<AddInterfaceVMValidator>());
 builder.Services.AddAutoMapper(typeof(Program));
@@ -30,6 +31,9 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseCors(options => options.AllowAnyOrigin());
+app.UseCors(options => options
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
 
 app.Run();

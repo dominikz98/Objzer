@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { MasterDataEndpoints } from 'src/app/endpoints/masterdata.endpoints';
-import { AddPropertyVM, EnumVM } from 'src/app/endpoints/viewmodels';
+import { AddPropertyVM, EnumVM } from 'src/app/models/viewmodels';
 import { PropertyModel } from 'src/app/models/property.model';
 
 @Component({
