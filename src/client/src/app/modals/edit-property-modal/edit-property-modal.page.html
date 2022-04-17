@@ -1,9 +1,5 @@
-<ion-header>
-  <ion-toolbar>
-    <h1 class="ion-margin" *ngIf="!model.form.name"> Edit Property </h1>
-    <h1 class="ion-margin" *ngIf="model.form.name">Edit {{ model.form.name }}</h1>
-  </ion-toolbar>
-</ion-header>
+<h1 class="ion-margin" *ngIf="!model.form.name"> Edit Property </h1>
+<h1 class="ion-margin" *ngIf="model.form.name">Edit {{ model.form.name }}</h1>
 
 <ion-content>
   <form [formGroup]="model.form" (ngSubmit)="onSave()">
@@ -20,7 +16,7 @@
 
     <ion-item>
       <ion-label>Type</ion-label>
-      <ion-select value="string" okText="Select" cancelText="Cancel" id="type" formControlName="type"
+      <ion-select okText="Select" cancelText="Cancel" id="type" formControlName="type"
         placeholder="Select Type">
         <ion-select-option *ngFor="let type of types" [value]="type.index">{{ type.name }}</ion-select-option>
       </ion-select>

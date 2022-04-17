@@ -1,23 +1,36 @@
-import { FormArray, FormControl, FormGroup, Validators } from "@angular/forms";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { AddPropertyVM } from "../endpoints/viewmodels";
 
 export class PropertyModel {
     public form: FormGroup;
+    public value: AddPropertyVM;
 
-    constructor(property: AddPropertyVM) {
+    constructor(value?: AddPropertyVM) {
+        this.value = value;
+        if (this.value == null) {
+            this.value = new AddPropertyVM();
+        }
+
         this.form = new FormGroup({
-            name: new FormControl(property.name, [
+            name: new FormControl(this.value.name, [
                 Validators.required,
                 Validators.minLength(1)
             ]),
-            description: new FormControl(property.description),
-            type: new FormControl(property.type, [
+            description: new FormControl(this.value.description),
+            type: new FormControl(this.value.type, [
                 Validators.required,
                 Validators.min(0)
             ]),
-            required: new FormControl(property.required, [
+            required: new FormControl(this.value.required, [
                 Validators.required
             ])
         });
+    }
+
+    public fillUp() {
+        this.value.name = this.form.value.name;
+        this.value.description = this.form.value.description;
+        this.value.type = this.form.value.type;
+        this.value.required = this.form.value.required;
     }
 }

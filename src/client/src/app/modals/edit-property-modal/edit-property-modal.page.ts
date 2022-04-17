@@ -17,10 +17,6 @@ export class EditPropertyModalPage implements OnInit {
   private model: PropertyModel;
 
   constructor(private masterdata: MasterDataEndpoints, private modalCtrl: ModalController) {
-    if (this.property == null) {
-      this.property = new AddPropertyVM();
-    }
-
     this.model = new PropertyModel(this.property);
   }
 
@@ -32,13 +28,12 @@ export class EditPropertyModalPage implements OnInit {
   }
 
   onSave() {
-    if (this.model.form.invalid
-      || this.model.form.dirty
-      || !this.model.form.touched) {
+    if (this.model.form.invalid || !this.model.form.touched) {
       return;
     }
 
-    this.modalCtrl.dismiss(this.property);
+    this.model.fillUp();
+    this.modalCtrl.dismiss(this.model);
   }
 
   onCancel() {

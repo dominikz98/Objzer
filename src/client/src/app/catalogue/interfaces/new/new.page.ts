@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
+import { FormArray, FormGroup } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import { InterfacesEndpoints } from 'src/app/endpoints/interfaces.endpoints';
 import { ListInterfaceVM } from 'src/app/endpoints/viewmodels';
 import { EditPropertyModalPage } from 'src/app/modals/edit-property-modal/edit-property-modal.page';
+import { PropertyModel } from 'src/app/models/property.model';
 import { InterfaceModel } from '../../../models/interface.model';
 
 @Component({
@@ -28,15 +30,13 @@ export class NewPage implements OnInit {
 
   async addProperty() {
     const modal = await this.modalCtrl.create({
-      component: EditPropertyModalPage,
-      componentProps: {
-        'name': 'The Winter Soldier'
-      }
+      component: EditPropertyModalPage
     });
 
-    modal.onDidDismiss().then((modalDataResponse) => {
-      if (modalDataResponse !== null) {
-        console.log('Modal Sent Data : ' + modalDataResponse.data);
+    modal.onDidDismiss().then((result) => {
+      if (result.data != null) {
+        const property = result.data as PropertyModel;
+        this.model.attachProperty(property);
       }
     });
 
