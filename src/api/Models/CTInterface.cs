@@ -57,7 +57,7 @@ namespace api.Models
         public bool Deleted { get; set; }
         public Guid InterfaceId { get; set; }
         public CTInterface? Interface { get; set; }
-        public PropertyTypes Type { get; set; } = PropertyTypes.String;
+        public PropertyType Type { get; set; } = PropertyType.String;
         public bool Required { get; set; } = true;
         public IList<CTHistory> History { get; set; } = new List<CTHistory>();
     }

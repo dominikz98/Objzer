@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar>
+    <h1 class="ion-margin" *ngIf="!model.form.name"> Edit Property </h1>
+    <h1 class="ion-margin" *ngIf="model.form.name">Edit {{ model.form.name }}</h1>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <form [formGroup]="model.form" (ngSubmit)="onSave()">
+
+    <ion-item>
+      <ion-label for="name">Name </ion-label>
+      <ion-input id="name" formControlName="name" placeholder="..."></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Description</ion-label>
+      <ion-textarea id="description" formControlName="description" placeholder="..."></ion-textarea>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Type</ion-label>
+      <ion-select value="string" okText="Select" cancelText="Cancel" id="type" formControlName="type"
+        placeholder="Select Type">
+        <ion-select-option *ngFor="let type of types" [value]="type.index">{{ type.name }}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-item>
+      <ion-label>Required</ion-label>
+      <ion-checkbox formControlName="required" checked="true"></ion-checkbox>
+    </ion-item>
+
+    <ion-button color="primary" (click)="onSave()" class="ion-margin">Save</ion-button>
+    <ion-button color="danger" (click)="onCancel()">Cancel</ion-button>
+
+  </form>
+</ion-content>

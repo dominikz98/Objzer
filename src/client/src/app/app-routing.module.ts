@@ -22,7 +22,12 @@ const routes: Routes = [
   {
     path: 'dashboard',
     loadChildren: () => import('./dashboard/dashboard.module').then( m => m.DashboardPageModule)
+  },
+  {
+    path: 'edit-property-modal',
+    loadChildren: () => import('./modals/edit-property-modal/edit-property-modal.module').then( m => m.EditPropertyModalPageModule)
   }
+
 ];
 
 @NgModule({

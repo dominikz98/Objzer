@@ -12,7 +12,7 @@ namespace api.Requests
     {
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public List<Guid> ChildrenIds { get; set; } = new List<Guid>();
+        public List<Guid> ImplementationIds { get; set; } = new List<Guid>();
         public List<CTInterfaceProperty> Properties { get; set; } = new List<CTInterfaceProperty>();
     }
 
@@ -46,10 +46,10 @@ namespace api.Requests
             };
 
             // attach children
-            if (request.ChildrenIds.Any())
+            if (request.ImplementationIds.Any())
             {
                 var children = await _context.Set<CTInterface>()
-                .Where(x => request.ChildrenIds.Contains(x.Id))
+                .Where(x => request.ImplementationIds.Contains(x.Id))
                 .ToListAsync(cancellationToken);
 
                 @interface.Implementations = new CTInterfaceAssignment()

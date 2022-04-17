@@ -40,7 +40,7 @@ namespace api.Models
         public string Description { get; set; } = string.Empty;
         public bool Deleted { get; set; }
         public bool Key { get; set; }
-        public PropertyTypes Type { get; set; } = PropertyTypes.String;
+        public PropertyType Type { get; set; } = PropertyType.String;
         public string Column { get; set; } = string.Empty;
         public bool Required { get; set; } = true;
         public int? MaxLength { get; set; }
@@ -67,15 +67,17 @@ namespace api.Models
         }
     }
 
-    public enum PropertyTypes
+    public enum PropertyType
     {
+        Guid,
+        String,
+        Int,
+        Double,
+        Decimal,
         Bool,
         Byte,
         Char,
-        String,
-        Double,
         Short,
-        Int,
         Long
     }
 }

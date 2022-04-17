@@ -9,7 +9,7 @@ namespace api.ViewModels
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public IList<HistoryVM> History { get; set; } = new List<HistoryVM>();
-        public PropertyTypes Type { get; set; } = PropertyTypes.String;
+        public PropertyType Type { get; set; } = PropertyType.String;
         public bool Required { get; set; } = true;
     }
 

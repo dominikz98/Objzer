@@ -33,7 +33,6 @@ export class AppComponent {
 
     for (const child of children) {
       const urlsegment: string = child.snapshot.url.map(segment => segment.path).join('/');
-
       if (urlsegment !== '') {
         url += `/${urlsegment}`;
         breadcrumbs.push({ href: url, name: this.capitalizeFirstLetter(urlsegment) });
