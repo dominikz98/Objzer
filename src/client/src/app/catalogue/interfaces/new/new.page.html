@@ -5,22 +5,22 @@
       <ion-row>
 
         <!-- General -->
-        <ion-col size-xs>
+        <ion-col>
           <ion-item>
             <h2>General</h2>
           </ion-item>
           <ion-item>
-            <ion-label for="name">Name </ion-label>
+            <ion-label for="name">Name:</ion-label>
             <ion-input id="name" formControlName="name" placeholder="..."></ion-input>
           </ion-item>
           <ion-item>
-            <ion-label>Description</ion-label>
+            <ion-label>Description:</ion-label>
             <ion-textarea formControlName="description" placeholder="..."></ion-textarea>
           </ion-item>
         </ion-col>
 
         <!-- Properties -->
-        <ion-col size-xs>
+        <ion-col>
           <ion-toolbar>
             <ion-buttons slot="start">
               <ion-button (click)="addProperty()">
@@ -33,17 +33,18 @@
             <ion-item *ngFor="let property of model.value.properties">
               <ion-grid>
                 <ion-row>
-                  <ion-col class="ion-align-items-center">
+                  <ion-col *ngIf="property.required" size="0.3">
+                    <div class="prop-required">
+                    </div>
+                  </ion-col>
+                  <ion-col>
                     <ion-label>
                       <h2>{{ property.name }}</h2>
                       <p> {{ property.description | truncate:[35, '...'] }} </p>
                     </ion-label>
                   </ion-col>
                   <ion-col>
-                    <ion-button>
-                      <ion-icon name="create"></ion-icon>
-                    </ion-button>
-                    <ion-button>
+                    <ion-button color="danger" (click)="removeProperty(property)">
                       <ion-icon name="close-circle"></ion-icon>
                     </ion-button>
                   </ion-col>
@@ -57,20 +58,21 @@
       <ion-row>
 
         <!-- Implementations -->
-        <ion-col size-xs>
+        <ion-col>
           <ion-item>
             <h2>Implementations</h2>
           </ion-item>
           <ion-list>
             <ion-item *ngFor="let interface of interfaces">
               <ion-label>{{interface.name}}</ion-label>
-              <ion-checkbox slot="start"></ion-checkbox>
+              <ion-checkbox [value]="interface" (ionChange)="onImplementationChange($event)" slot="start">
+              </ion-checkbox>
             </ion-item>
           </ion-list>
         </ion-col>
 
         <!-- History -->
-        <ion-col size-xs>
+        <ion-col>
           <!-- <ion-item>
             <h2>History</h2>
           </ion-item> -->

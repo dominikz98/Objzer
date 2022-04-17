@@ -10,6 +10,7 @@ export class PropertyModel {
         if (this.value == null) {
             this.value = new AddPropertyVM();
         }
+        this.value.required = true;
 
         this.form = new FormGroup({
             name: new FormControl(this.value.name, [
@@ -21,9 +22,7 @@ export class PropertyModel {
                 Validators.required,
                 Validators.min(0)
             ]),
-            required: new FormControl(this.value.required, [
-                Validators.required
-            ])
+            required: new FormControl(this.value.required)
         });
     }
 

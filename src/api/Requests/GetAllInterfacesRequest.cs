@@ -34,25 +34,22 @@ namespace api.Requests
 
             // load history
             var history = await _historyLoader.QueryAll(interfaces)
-                .Select(x => x.Timestamp)
+                .Select(x => new { x.EntityId, x.Timestamp })
                 .ToListAsync(cancellationToken);
 
             // create viewmodels
-            var result = new List<ListInterfaceVM>();
-            foreach (var @interface in interfaces)
-            {
-
-                result.Add(new ListInterfaceVM()
+            return interfaces
+                .Select(x => new ListInterfaceVM()
                 {
-                    Id = @interface.Id,
-                    Name = @interface.Name,
-                    Description = @interface.Description,
-                    LastModified = history.Max(),
-                    HistoryCount = history.Count,
-                    PropertiesCount = @interface.Properties.Count()
-                });
-            }
-            return result;
+                    Id = x.Id,
+                    Name = x.Name,
+                    Description = x.Description,
+                    LastModified = history.Where(y => y.EntityId == x.Id).Max(y => y.Timestamp),
+                    HistoryCount = history.Where(y => y.EntityId == x.Id).Count(),
+                    PropertiesCount = x.Properties.Count()
+                })
+                .OrderBy(x => x.Name)
+                .ToList();
         }
 
         class InterfaceDTO : IEntity
