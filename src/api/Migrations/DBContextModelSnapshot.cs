@@ -52,9 +52,6 @@ namespace api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("CTInterfaceAssignmentParentId")
-                        .HasColumnType("TEXT");
-
                     b.Property<bool>("Deleted")
                         .HasColumnType("INTEGER");
 
@@ -68,8 +65,6 @@ namespace api.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CTInterfaceAssignmentParentId");
-
                     b.HasIndex("Deleted");
 
                     b.ToTable("interfaces", (string)null);
@@ -77,15 +72,20 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.CTInterfaceAssignment", b =>
                 {
-                    b.Property<Guid>("ParentId")
+                    b.Property<Guid>("SourceId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("DestinationId")
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("Deleted")
                         .HasColumnType("INTEGER");
 
-                    b.HasKey("ParentId");
+                    b.HasKey("SourceId", "DestinationId");
 
                     b.HasIndex("Deleted");
+
+                    b.HasIndex("DestinationId");
 
                     b.ToTable("interface_assignments", (string)null);
                 });
@@ -169,22 +169,23 @@ namespace api.Migrations
                     b.ToTable("MinimalDTO");
                 });
 
-            modelBuilder.Entity("api.Models.CTInterface", b =>
-                {
-                    b.HasOne("api.Models.CTInterfaceAssignment", null)
-                        .WithMany("References")
-                        .HasForeignKey("CTInterfaceAssignmentParentId");
-                });
-
             modelBuilder.Entity("api.Models.CTInterfaceAssignment", b =>
                 {
-                    b.HasOne("api.Models.CTInterface", "Parent")
-                        .WithOne("Implementations")
-                        .HasForeignKey("api.Models.CTInterfaceAssignment", "ParentId")
+                    b.HasOne("api.Models.CTInterface", "Destination")
+                        .WithMany("Usings")
+                        .HasForeignKey("DestinationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Parent");
+                    b.HasOne("api.Models.CTInterface", "Source")
+                        .WithMany("Includings")
+                        .HasForeignKey("SourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Destination");
+
+                    b.Navigation("Source");
                 });
 
             modelBuilder.Entity("api.Models.CTInterfaceProperty", b =>
@@ -207,15 +208,11 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.Models.CTInterface", b =>
                 {
-                    b.Navigation("Implementations")
-                        .IsRequired();
+                    b.Navigation("Includings");
 
                     b.Navigation("Properties");
-                });
 
-            modelBuilder.Entity("api.Models.CTInterfaceAssignment", b =>
-                {
-                    b.Navigation("References");
+                    b.Navigation("Usings");
                 });
 
             modelBuilder.Entity("api.Requests.GetContractsRequestHandler+InterfaceDTO", b =>

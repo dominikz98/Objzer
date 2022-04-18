@@ -34,20 +34,14 @@ namespace api.Requests
         {
             // load interface with references
             var @interface = await _context.Set<CTInterface>()
-                .Include(x => x.Implementations)
+                .Include(x => x.Includings)
+                .Include(x => x.Properties)
                 .AsNoTracking()
                 .Where(x => x.Id == request.Id)
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (@interface is null)
                 return RequestResult.Null<InterfaceVM>();
-
-            // attach properties
-            var propertyIds = @interface.Properties.Select(x => x.Id);
-            @interface.Properties = await _context.Set<CTInterfaceProperty>()
-                .AsNoTracking()
-                .Where(x => propertyIds.Contains(x.Id))
-                .ToListAsync(cancellationToken);
 
             // attach history
             @interface.History = await _historyLoader.Load(@interface, cancellationToken);

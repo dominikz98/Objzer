@@ -74,11 +74,11 @@ export class NewPage implements OnInit {
     }
 
     if ($event.target.checked) {
-      this.model.value.implementationIds.push($event.target.value.id);
+      this.model.value.includingIds.push($event.target.value.id);
     } else {
-      const index = this.model.value.implementationIds.indexOf($event.target.value.id, 0);
+      const index = this.model.value.includingIds.indexOf($event.target.value.id, 0);
       if (index > -1) {
-        this.model.value.implementationIds.splice(index, 1);
+        this.model.value.includingIds.splice(index, 1);
       }
     }
   }

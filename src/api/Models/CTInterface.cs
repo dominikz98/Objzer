@@ -9,7 +9,8 @@ namespace api.Models
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public bool Deleted { get; set; }
-        public CTInterfaceAssignment Implementations { get; set; } = new CTInterfaceAssignment();
+        public IList<CTInterfaceAssignment> Includings { get; set; } = new List<CTInterfaceAssignment>();
+        public IList<CTInterfaceAssignment> Usings { get; set; } = new List<CTInterfaceAssignment>();
         public IList<CTInterfaceProperty> Properties { get; set; } = new List<CTInterfaceProperty>();
         public IList<CTHistory> History { get; set; } = new List<CTHistory>();
     }
@@ -23,9 +24,6 @@ namespace api.Models
                 .WithOne(x => x.Interface)
                 .HasForeignKey(x => x.InterfaceId);
 
-            builder.HasOne(x => x.Implementations)
-                .WithOne(x => x.Parent);
-
             builder.Ignore(x => x.History);
             builder.HasIndex(x => x.Deleted);
         }
@@ -33,9 +31,10 @@ namespace api.Models
 
     public class CTInterfaceAssignment : IDeletable
     {
-        public Guid ParentId { get; set; }
-        public CTInterface? Parent { get; set; }
-        public IList<CTInterface> References { get; set; } = new List<CTInterface>();
+        public Guid SourceId { get; set; }
+        public CTInterface? Source { get; set; }
+        public Guid DestinationId { get; set; }
+        public CTInterface? Destination { get; set; }
         public bool Deleted { get; set; }
     }
 
@@ -44,7 +43,16 @@ namespace api.Models
         public void Configure(EntityTypeBuilder<CTInterfaceAssignment> builder)
         {
             builder.ToTable("interface_assignments");
-            builder.HasKey(x => x.ParentId);
+            
+            builder.HasOne(x => x.Destination)
+                .WithMany(x => x.Usings)
+                .HasForeignKey(x => x.DestinationId);
+
+            builder.HasOne(x => x.Source)
+                .WithMany(x => x.Includings)
+                .HasForeignKey(x => x.SourceId);
+
+            builder.HasKey(x => new { x.SourceId, x.DestinationId });
             builder.HasIndex(x => x.Deleted);
         }
     }

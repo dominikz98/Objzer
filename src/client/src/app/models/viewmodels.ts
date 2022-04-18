@@ -17,7 +17,7 @@ export class AddInterfaceVM {
     name: string;
     description: string;
     properties: AddPropertyVM[];
-    implementationIds: string[];
+    includingIds: string[];
 }
 
 export class InterfaceVM {
@@ -25,7 +25,7 @@ export class InterfaceVM {
     name: string;
     description: string;
     properties: PropertyVM[];
-    implementations: ReferenceVM[];
+    includings: ReferenceVM[];
     objects: ReferenceVM[];
 }
 

@@ -47,8 +47,16 @@ namespace api.Controllers
         //public async Task<IActionResult> Update(CancellationToken cancellationToken)
         //    => Ok(await _mediator.Send(null, cancellationToken));
 
-        //[HttpDelete]
-        //public async Task<IActionResult> Delete(CancellationToken cancellationToken)
-        //    => Ok(await _mediator.Send(null, cancellationToken));
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(new DeleteInterfaceRequest(id), cancellationToken);
+            return result.Status switch
+            {
+                RequestResultStatus.SUCCESS => Ok(result.Value),
+                RequestResultStatus.NOT_FOUND => NotFound(result.Message),
+                _ => throw new NotImplementedException()
+            };
+        }
     }
 }

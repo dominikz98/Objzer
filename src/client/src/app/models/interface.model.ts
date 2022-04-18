@@ -15,8 +15,8 @@ export class InterfaceModel {
             this.value.properties = [];
         }
 
-        if (this.value.implementationIds == null) {
-            this.value.implementationIds = [];
+        if (this.value.includingIds == null) {
+            this.value.includingIds = [];
         }
 
         this.form = new FormGroup({
