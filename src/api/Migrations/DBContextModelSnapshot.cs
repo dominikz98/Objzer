@@ -124,7 +124,7 @@ namespace api.Migrations
                     b.ToTable("interface_properties", (string)null);
                 });
 
-            modelBuilder.Entity("api.Requests.GetContractsRequestHandler+InterfaceDTO", b =>
+            modelBuilder.Entity("api.Requests.InterfaceDTO", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -146,7 +146,7 @@ namespace api.Migrations
                     b.ToTable("InterfaceDTO");
                 });
 
-            modelBuilder.Entity("api.Requests.GetContractsRequestHandler+MinimalDTO", b =>
+            modelBuilder.Entity("api.Requests.MinimalDTO", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -199,9 +199,9 @@ namespace api.Migrations
                     b.Navigation("Interface");
                 });
 
-            modelBuilder.Entity("api.Requests.GetContractsRequestHandler+MinimalDTO", b =>
+            modelBuilder.Entity("api.Requests.MinimalDTO", b =>
                 {
-                    b.HasOne("api.Requests.GetContractsRequestHandler+InterfaceDTO", null)
+                    b.HasOne("api.Requests.InterfaceDTO", null)
                         .WithMany("Properties")
                         .HasForeignKey("InterfaceDTOId");
                 });
@@ -215,7 +215,7 @@ namespace api.Migrations
                     b.Navigation("Usings");
                 });
 
-            modelBuilder.Entity("api.Requests.GetContractsRequestHandler+InterfaceDTO", b =>
+            modelBuilder.Entity("api.Requests.InterfaceDTO", b =>
                 {
                     b.Navigation("Properties");
                 });

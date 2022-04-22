@@ -32,15 +32,6 @@ const routes: Routes = [
         ]
       },
       {
-        path: 'enumerations',
-        children: [
-          {
-            path: '',
-            loadChildren: () => import('./enumerations/enumerations.module').then(m => m.EnumerationsPageModule)
-          }
-        ]
-      },
-      {
         path: 'abstractions',
         children: [
           {

@@ -23,6 +23,7 @@ namespace api.Requests
         {
             // load from db
             var interfaces = await _context.Set<CTInterface>()
+                .AsQueryable()
                 .Select(x => new InterfaceDTO
                 {
                     Id = x.Id,
@@ -51,21 +52,21 @@ namespace api.Requests
                 .OrderBy(x => x.Name)
                 .ToList();
         }
+    }
 
-        class InterfaceDTO : IEntity
-        {
-            public Guid Id { get; set; }
-            public string Name { get; set; } = string.Empty;
-            public string Description { get; set; } = string.Empty;
-            public bool Deleted { get; set; }
-            public IEnumerable<MinimalDTO> Properties { get; set; } = new List<MinimalDTO>();
-        }
+    internal class InterfaceDTO : IEntity
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public bool Deleted { get; set; }
+        public IEnumerable<MinimalDTO> Properties { get; set; } = new List<MinimalDTO>();
+    }
 
-        class MinimalDTO : IEntity
-        {
-            public Guid Id { get; set; }
-            public string Name { get; set; } = string.Empty;
-            public bool Deleted { get; set; }
-        }
+    internal class MinimalDTO : IEntity
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public bool Deleted { get; set; }
     }
 }

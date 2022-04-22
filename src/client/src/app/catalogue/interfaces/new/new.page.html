@@ -2,7 +2,7 @@
   <form [formGroup]="model.form" (ngSubmit)="onSave()">
 
     <ion-grid>
-      <ion-row>
+      <ion-row class="ion-align-items-stretch">
 
         <!-- General -->
         <ion-col>
@@ -11,12 +11,26 @@
           </ion-item>
           <ion-item>
             <ion-label for="name">Name:</ion-label>
-            <ion-input id="name" formControlName="name" placeholder="..."></ion-input>
+            <ion-input id="name" formControlName="name" placeholder="IExample"></ion-input>
           </ion-item>
           <ion-item>
             <ion-label>Description:</ion-label>
             <ion-textarea formControlName="description" placeholder="..."></ion-textarea>
           </ion-item>
+        </ion-col>
+
+        <!-- Implementations -->
+        <ion-col *ngIf="interfaces?.length">
+          <ion-item>
+            <h2>Implementations</h2>
+          </ion-item>
+          <ion-list>
+            <ion-item *ngFor="let interface of interfaces">
+              <ion-label>{{interface.name}}</ion-label>
+              <ion-checkbox [value]="interface" (ionChange)="onImplementationChange($event)" slot="start">
+              </ion-checkbox>
+            </ion-item>
+          </ion-list>
         </ion-col>
 
         <!-- Properties -->
@@ -30,20 +44,18 @@
             <ion-title>Properties</ion-title>
           </ion-toolbar>
           <ion-list>
-            <ion-item *ngFor="let property of model.value.properties">
+            <ion-item *ngFor="let property of model.value.properties" button="true">
               <ion-grid>
                 <ion-row>
                   <ion-col *ngIf="property.required" size="0.3">
                     <div class="prop-required">
                     </div>
                   </ion-col>
-                  <ion-col>
-                    <ion-label>
-                      <h2>{{ property.name }}</h2>
-                      <p> {{ property.description | truncate:[35, '...'] }} </p>
-                    </ion-label>
+                  <ion-col class="ion-align-self-center">
+                      <b> {{ property.name }} </b>
+                      <div> {{ property.description | truncate:[35, '...'] }} </div>
                   </ion-col>
-                  <ion-col>
+                  <ion-col size="4" class="ion-align-self-center">
                     <ion-button color="danger" (click)="removeProperty(property)">
                       <ion-icon name="close-circle"></ion-icon>
                     </ion-button>
@@ -54,39 +66,20 @@
           </ion-list>
         </ion-col>
 
-      </ion-row>
-      <ion-row>
-
-        <!-- Implementations -->
-        <ion-col>
-          <ion-item>
-            <h2>Implementations</h2>
-          </ion-item>
-          <ion-list>
-            <ion-item *ngFor="let interface of interfaces">
-              <ion-label>{{interface.name}}</ion-label>
-              <ion-checkbox [value]="interface" (ionChange)="onImplementationChange($event)" slot="start">
-              </ion-checkbox>
-            </ion-item>
-          </ion-list>
-        </ion-col>
-
         <!-- History -->
         <ion-col>
           <!-- <ion-item>
             <h2>History</h2>
           </ion-item> -->
         </ion-col>
-
       </ion-row>
-      <ion-row>
 
-        <!-- Actions -->
+      <!-- Actions -->
+      <ion-row>
         <ion-col>
           <ion-button color="primary" (click)="onSave()" class="ion-margin">Save</ion-button>
           <ion-button color="danger" routerLink="/catalogue/interfaces">Cancel</ion-button>
         </ion-col>
-
       </ion-row>
     </ion-grid>
 
