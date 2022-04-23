@@ -7,9 +7,15 @@ const routes: Routes = [
   {
     path: '',
     component: InterfacesPage
-  },  {
-    path: 'new',
-    loadChildren: () => import('./new/new.module').then( m => m.NewPageModule)
+  },
+  {
+    path: 'edit',
+    children: [
+      {
+        path: '',
+        loadChildren: () => import('./edit/edit.module').then(m => m.EditPageModule)
+      }
+    ]
   }
 
 ];

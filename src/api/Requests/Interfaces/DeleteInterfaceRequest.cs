@@ -4,7 +4,7 @@ using api.ViewModels;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Requests
+namespace api.Requests.Interfaces
 {
     public class DeleteInterfaceRequest : IRequest<RequestResult<IdVM>>
     {

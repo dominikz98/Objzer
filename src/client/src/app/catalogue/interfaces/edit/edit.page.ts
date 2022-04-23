@@ -1,35 +1,67 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
+import { map } from 'rxjs/operators';
 import { InterfacesEndpoints } from 'src/app/endpoints/interfaces.endpoints';
-import { AddPropertyVM, ListInterfaceVM } from 'src/app/models/viewmodels';
 import { EditPropertyModalPage } from 'src/app/modals/edit-property-modal/edit-property-modal.page';
+import { InterfaceModel } from 'src/app/models/interface.model';
 import { PropertyModel } from 'src/app/models/property.model';
-import { InterfaceModel } from '../../../models/interface.model';
-import { Router } from '@angular/router';
-@Component({
-  selector: 'app-new',
-  templateUrl: './new.page.html',
-  styleUrls: ['./new.page.scss'],
-})
-export class NewPage implements OnInit {
+import { AddPropertyVM, EditInterfaceVM, InterfaceVM, ListInterfaceVM } from 'src/app/models/viewmodels';
 
+@Component({
+  selector: 'app-edit',
+  templateUrl: './edit.page.html',
+  styleUrls: ['./edit.page.scss'],
+})
+export class EditPage implements OnInit {
   public interfaces: ListInterfaceVM[];
   public model: InterfaceModel;
 
   constructor(private endpoints: InterfacesEndpoints,
     private modalCtrl: ModalController,
-    private router: Router) {
-    this.model = new InterfaceModel();
+    private router: Router,
+    private route: ActivatedRoute) {
   }
 
   ngOnInit() {
-    this.endpoints.get()
-      // .pipe(
-      //   filter(x => x.id != this.model.value.id)
-      // )
+
+    this.tryLoadInterface();
+    this.loadInterfaces();
+  }
+
+  tryLoadInterface(): any {
+    let id: string;
+    this.route.params.subscribe(params => {
+      id = params['id'];
+    });
+
+    if (id == null) {
+      return null;
+    }
+
+    this.endpoints.getById(id)
+      .subscribe((response: any) => {
+        if (response == null) {
+          this.model = new InterfaceModel(null);
+        } else {
+          var casted = response.value as EditInterfaceVM;
+          this.model = new InterfaceModel(casted);
+        }
+      })
+  }
+
+  loadInterfaces() {
+    this.endpoints.getAll()
+      .pipe(
+        map(data =>
+          data.filter(entry => {
+            return this.model.value.id != null && entry.id != this.model.value.id;
+          })
+        )
+      )
       .subscribe((data: ListInterfaceVM[]) => {
         this.interfaces = data;
-      })
+      });
   }
 
   async addProperty() {
@@ -60,8 +92,13 @@ export class NewPage implements OnInit {
     }
 
     this.model.fillUp();
-    this.endpoints.create(this.model.value).subscribe();
 
+    if (this.model.value.id == null) {
+      this.endpoints.create(this.model.value).subscribe();
+    } else {
+      this.endpoints.update(this.model.value).subscribe();
+    }
+    
     // Navigates to url entry to destroy page lifecycle
     this.router.navigate(['/']).then(() => {
       this.router.navigate(['/catalogue/interfaces']);

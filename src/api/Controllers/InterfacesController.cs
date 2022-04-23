@@ -1,5 +1,6 @@
 ﻿using api.Core;
 using api.Requests;
+using api.Requests.Interfaces;
 using api.ViewModels.Interface;
 using AutoMapper;
 using MediatR;
@@ -43,9 +44,19 @@ namespace api.Controllers
             };
         }
 
-        //[HttpPut]
-        //public async Task<IActionResult> Update(CancellationToken cancellationToken)
-        //    => Ok(await _mediator.Send(null, cancellationToken));
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] EditInterfaceVM vm, CancellationToken cancellationToken)
+        {
+            var request = _mapper.Map<EditInterfaceRequest>(vm);
+            var result = await _mediator.Send(request, cancellationToken);
+
+            return result.Status switch
+            {
+                RequestResultStatus.SUCCESS => Ok(result.Value),
+                RequestResultStatus.NOT_FOUND => NotFound(result.Message),
+                _ => throw new NotImplementedException()
+            };
+        }
 
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)

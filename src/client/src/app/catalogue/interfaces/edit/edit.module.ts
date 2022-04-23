@@ -4,22 +4,22 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { NewPageRoutingModule } from './new-routing.module';
+import { EditPageRoutingModule } from './edit-routing.module';
 
-import { NewPage } from './new.page';
-import { PipesModule } from 'src/app/pipes/pipes.module';
+import { EditPage } from './edit.page';
 import { ModalsModule } from 'src/app/modals/modals.module';
+import { PipesModule } from 'src/app/pipes/pipes.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    NewPageRoutingModule,
+    EditPageRoutingModule,
     ReactiveFormsModule,
     ModalsModule,
     PipesModule
   ],
-  declarations: [NewPage]
+  declarations: [EditPage]
 })
-export class NewPageModule { }
+export class EditPageModule {}

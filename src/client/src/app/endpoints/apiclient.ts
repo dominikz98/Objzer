@@ -18,6 +18,12 @@ export class ApiClient {
     }),
   };
 
+  put<TRequest, TReponse>(url: string, model: TRequest): Observable<TReponse> {
+    return this.http
+      .put<TReponse>(environment.apiUrl + '/' + url, model)
+      .pipe(catchError(this.handleError))
+  }
+
   post<TRequest, TReponse>(url: string, model: TRequest): Observable<TReponse> {
     return this.http
       .post<TReponse>(environment.apiUrl + '/' + url, model)
@@ -27,7 +33,10 @@ export class ApiClient {
   get<TResult>(url: string) {
     return this.http
       .get<TResult>(environment.apiUrl + '/' + url)
-      .pipe(retry(1), catchError(this.handleError));
+      .pipe(
+        retry(1),
+        catchError(this.handleError)
+      );
   }
 
   handleError(error: any) {

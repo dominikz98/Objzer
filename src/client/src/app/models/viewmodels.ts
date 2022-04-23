@@ -13,7 +13,8 @@ export class EnumVM {
     name: string;
 }
 
-export class AddInterfaceVM {
+export class EditInterfaceVM {
+    id: string;
     name: string;
     description: string;
     properties: AddPropertyVM[];
@@ -24,9 +25,9 @@ export class InterfaceVM {
     id: string;
     name: string;
     description: string;
+    history: HistoryVM[];
     properties: PropertyVM[];
     includings: ReferenceVM[];
-    objects: ReferenceVM[];
 }
 
 export class AddPropertyVM {

@@ -1,4 +1,4 @@
-﻿using api.Requests;
+﻿using api.Requests.Interfaces;
 using AutoMapper;
 using FluentValidation;
 

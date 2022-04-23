@@ -4,7 +4,7 @@ using api.ViewModels.Interface;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Requests
+namespace api.Requests.Interfaces
 {
     public class GetAllInterfacesRequest : IRequest<IReadOnlyCollection<ListInterfaceVM>> { }
 

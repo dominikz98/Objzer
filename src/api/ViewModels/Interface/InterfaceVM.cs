@@ -15,6 +15,13 @@ namespace api.ViewModels.Interface
     {
         public InterfaceVMProfile()
             => CreateMap<CTInterface, InterfaceVM>()
-                .ForMember(x => x.Includings, x => x.MapFrom(y => y.Includings.Select(z => new ReferenceVM { Id = z.Destination.Id, Name = z.Destination.Name })));
+                .ForMember(x => x.Includings,
+                    x => x.MapFrom(y => y.Includings
+                        .Where(z => z.Destination != null)
+                        .Select(z => new ReferenceVM
+                        {
+                            Id = z.Destination!.Id,
+                            Name = z.Destination.Name
+                        })));
     }
 }

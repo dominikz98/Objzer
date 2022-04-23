@@ -6,7 +6,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Requests
+namespace api.Requests.Interfaces
 {
     public class AddInterfaceRequest : IRequest<RequestResult<InterfaceVM>>
     {
@@ -47,30 +47,11 @@ namespace api.Requests
                 Description = request.Description
             };
 
-            // attach children
-            if (request.IncludingIds.Any())
-            {
-                var children = await _context.Set<CTInterface>()
-                    .Where(x => request.IncludingIds.Contains(x.Id))
-                    .ToListAsync(cancellationToken);
-
-                foreach (var child in children)
-                    @interface.Includings.Add(new CTInterfaceAssignment()
-                    {
-                        SourceId = @interface.Id,
-                        Source = @interface,
-                        DestinationId = child.Id,
-                        Destination = child
-                    });
-            }
+            // attach includings
+            await AddIncludings(@interface, request.IncludingIds, cancellationToken);
 
             // attach properties
-            foreach (var property in request.Properties)
-            {
-                property.Id = Guid.NewGuid();
-                property.InterfaceId = @interface.Id;
-                @interface.Properties.Add(property);
-            }
+            AddProperties(@interface, request.Properties);
 
             // save changes
             await _context.AddAsync(@interface, cancellationToken);
@@ -81,6 +62,33 @@ namespace api.Requests
 
             var vm = _mapper.Map<InterfaceVM>(@interface);
             return RequestResult.Success(vm);
+        }
+
+        private async Task AddIncludings(CTInterface @interface, List<Guid> includingIds, CancellationToken cancellationToken)
+        {
+            if (!includingIds.Any())
+                return;
+
+            var children = await _context.Set<CTInterface>()
+                .Where(x => includingIds.Contains(x.Id))
+                .ToListAsync(cancellationToken);
+
+            foreach (var child in children)
+                @interface.Includings.Add(new CTInterfaceAssignment()
+                {
+                    SourceId = @interface.Id,
+                    DestinationId = child.Id
+                });
+        }
+
+        private static void AddProperties(CTInterface @interface, List<CTInterfaceProperty> properties)
+        {
+            foreach (var property in properties)
+            {
+                property.Id = Guid.NewGuid();
+                property.InterfaceId = @interface.Id;
+                @interface.Properties.Add(property);
+            }
         }
     }
 }
