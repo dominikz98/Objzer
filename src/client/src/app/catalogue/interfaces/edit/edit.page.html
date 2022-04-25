@@ -49,7 +49,7 @@
             <ion-title>Properties</ion-title>
           </ion-toolbar>
           <ion-list>
-            <ion-item *ngFor="let property of model.value.properties" button="true">
+            <ion-item *ngFor="let property of model.value.properties" button="true" (click)="editProperty(property)">
               <ion-grid>
                 <ion-row>
                   <ion-col *ngIf="property.required" size="0.3">
@@ -82,7 +82,7 @@
       <!-- Actions -->
       <ion-row>
         <ion-col>
-          <ion-button color="primary" [disabled]="!this.model.form.touched" (click)="onSave()" class="ion-margin">Save
+          <ion-button color="primary" [disabled]="!this.model.form.touched && !this.modified" (click)="onSave()" class="ion-margin">Save
           </ion-button>
           <ion-button color="danger" routerLink="/catalogue/interfaces">Cancel</ion-button>
         </ion-col>

@@ -6,7 +6,7 @@ import { InterfacesEndpoints } from 'src/app/endpoints/interfaces.endpoints';
 import { EditPropertyModalPage } from 'src/app/modals/edit-property-modal/edit-property-modal.page';
 import { InterfaceModel } from 'src/app/models/interface.model';
 import { PropertyModel } from 'src/app/models/property.model';
-import { AddPropertyVM, EditInterfaceVM, InterfaceVM, ListInterfaceVM } from 'src/app/models/viewmodels';
+import { EditInterfaceVM, ListInterfaceVM, PropertyVM } from 'src/app/models/viewmodels';
 
 @Component({
   selector: 'app-edit',
@@ -16,6 +16,7 @@ import { AddPropertyVM, EditInterfaceVM, InterfaceVM, ListInterfaceVM } from 'sr
 export class EditPage implements OnInit {
   public interfaces: ListInterfaceVM[];
   public model: InterfaceModel;
+  public modified: boolean;
 
   constructor(private endpoints: InterfacesEndpoints,
     private modalCtrl: ModalController,
@@ -23,34 +24,30 @@ export class EditPage implements OnInit {
     private route: ActivatedRoute) {
   }
 
-  ngOnInit() {
-
-    this.tryLoadInterface();
-    this.loadInterfaces();
+  async ngOnInit() {
+    await this.loadInterface();
+    await this.loadIncludings();
   }
 
-  tryLoadInterface(): any {
+  async loadInterface(): Promise<void> {
     let id: string;
     this.route.params.subscribe(params => {
       id = params['id'];
     });
 
     if (id == null) {
-      return null;
+      this.model = new InterfaceModel(null);
+      return;
     }
 
     this.endpoints.getById(id)
       .subscribe((response: any) => {
-        if (response == null) {
-          this.model = new InterfaceModel(null);
-        } else {
-          var casted = response.value as EditInterfaceVM;
-          this.model = new InterfaceModel(casted);
-        }
-      })
+        var casted = response?.value as EditInterfaceVM;
+        this.model = new InterfaceModel(casted);
+      });
   }
 
-  loadInterfaces() {
+  async loadIncludings(): Promise<void> {
     this.endpoints.getAll()
       .pipe(
         map(data =>
@@ -79,26 +76,54 @@ export class EditPage implements OnInit {
     return await modal.present();
   }
 
-  removeProperty(property: AddPropertyVM) {
+  async editProperty(value: PropertyVM) {
+
+    const modal = await this.modalCtrl.create({
+      component: EditPropertyModalPage,
+      componentProps: {
+        property: value
+      }
+    });
+
+    modal.onDidDismiss().then((result) => {
+      if (result.data != null) {
+        let property = result.data as PropertyModel;
+        let index = this.model.value.properties.indexOf(property.value);
+
+        if (index < 0) {
+          return;
+        }
+
+        this.model.value.properties.splice(index, 1, property.value);
+        this.modified = true;
+      }
+    });
+
+    return await modal.present();
+  }
+
+  removeProperty(property: PropertyVM) {
     const index = this.model.value.properties.indexOf(property, 0);
     if (index > -1) {
       this.model.value.properties.splice(index, 1);
+      this.modified = true;
     }
   }
 
-  onSave() {
-    if (this.model.form.invalid || !this.model.form.touched) {
+  async onSave() {
+    console.log(this.model.form.invalid);
+    if (this.model.form.invalid) {
       return;
     }
 
     this.model.fillUp();
 
     if (this.model.value.id == null) {
-      this.endpoints.create(this.model.value).subscribe();
+      await this.endpoints.create(this.model.value).toPromise();
     } else {
-      this.endpoints.update(this.model.value).subscribe();
+      await this.endpoints.update(this.model.value).toPromise();
     }
-    
+
     // Navigates to url entry to destroy page lifecycle
     this.router.navigate(['/']).then(() => {
       this.router.navigate(['/catalogue/interfaces']);
@@ -109,6 +134,8 @@ export class EditPage implements OnInit {
     if ($event.target.value.id == null) {
       return;
     }
+
+    this.modified = true;
 
     if ($event.target.checked) {
       this.model.value.includingIds.push($event.target.value.id);

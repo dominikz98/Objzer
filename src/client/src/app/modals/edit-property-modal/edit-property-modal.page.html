@@ -2,7 +2,11 @@
 <h1 class="ion-margin" *ngIf="model.form.name">Edit {{ model.form.name }}</h1>
 
 <ion-content>
-  <form [formGroup]="model.form" (ngSubmit)="onSave()">
+  <div *ngIf="!model?.form">
+    Loading ...
+  </div>
+
+  <form [formGroup]="model.form" *ngIf="model?.form" (ngSubmit)="onSave()">
 
     <ion-item>
       <ion-label for="name">Name </ion-label>
@@ -16,8 +20,7 @@
 
     <ion-item>
       <ion-label>Type</ion-label>
-      <ion-select okText="Select" cancelText="Cancel" id="type" formControlName="type"
-        placeholder="Select Type">
+      <ion-select okText="Select" cancelText="Cancel" id="type" formControlName="type">
         <ion-select-option *ngFor="let type of types" [value]="type.index">{{ type.name }}</ion-select-option>
       </ion-select>
     </ion-item>
@@ -27,7 +30,8 @@
       <ion-checkbox formControlName="required" checked="true"></ion-checkbox>
     </ion-item>
 
-    <ion-button color="primary" (click)="onSave()" class="ion-margin">Save</ion-button>
+    <ion-button color="primary" [disabled]="!this.model.form.touched" (click)="onSave()" class="ion-margin">Save
+    </ion-button>
     <ion-button color="danger" (click)="onCancel()">Cancel</ion-button>
 
   </form>

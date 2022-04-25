@@ -1,9 +1,9 @@
-﻿using api.Models;
-using api.Requests;
+﻿using Core.Models.Enumerations;
+using Infrastructure.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace api.Controllers
+namespace Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]

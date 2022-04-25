@@ -1,3 +1,8 @@
+export class EnumVM {
+    index: number;
+    name: string;
+}
+
 export class ListInterfaceVM {
     id: string;
     name: string;
@@ -8,16 +13,11 @@ export class ListInterfaceVM {
     objectsCount: number;
 }
 
-export class EnumVM {
-    index: number;
-    name: string;
-}
-
 export class EditInterfaceVM {
     id: string;
     name: string;
     description: string;
-    properties: AddPropertyVM[];
+    properties: PropertyVM[];
     includingIds: string[];
 }
 
@@ -25,25 +25,15 @@ export class InterfaceVM {
     id: string;
     name: string;
     description: string;
-    history: HistoryVM[];
     properties: PropertyVM[];
-    includings: ReferenceVM[];
+    history: HistoryVM[];
 }
 
-export class AddPropertyVM {
+export class PropertyVM {
     name: string;
     description: string;
     type: number;
     required: boolean
-}
-
-export class PropertyVM {
-    id: string;
-    name: string;
-    description: string;
-    type: number;
-    required: boolean;
-    history: HistoryVM[];
 }
 
 export class HistoryVM {
@@ -52,9 +42,4 @@ export class HistoryVM {
     type: number;
     entityId: string;
     changes: string;
-}
-
-export class ReferenceVM {
-    id: string;
-    name: string;
 }

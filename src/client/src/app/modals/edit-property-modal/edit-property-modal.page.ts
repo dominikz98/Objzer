@@ -1,7 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { MasterDataEndpoints } from 'src/app/endpoints/masterdata.endpoints';
-import { AddPropertyVM, EnumVM } from 'src/app/models/viewmodels';
+import { PropertyVM, EnumVM } from 'src/app/models/viewmodels';
 import { PropertyModel } from 'src/app/models/property.model';
 
 @Component({
@@ -11,16 +11,16 @@ import { PropertyModel } from 'src/app/models/property.model';
 })
 export class EditPropertyModalPage implements OnInit {
 
-  @Input() property: AddPropertyVM;
+  public property: PropertyVM;
 
-  public types: EnumVM[];
-  private model: PropertyModel;
+  types: EnumVM[];
+  model: PropertyModel;
 
-  constructor(private masterdata: MasterDataEndpoints, private modalCtrl: ModalController) {
-    this.model = new PropertyModel(this.property);
-  }
+  constructor(private masterdata: MasterDataEndpoints, private modalCtrl: ModalController) { }
 
   ngOnInit() {
+    this.model = new PropertyModel(this.property);
+
     this.masterdata.getPropertyTypes()
       .subscribe((data: EnumVM[]) => {
         this.types = data;

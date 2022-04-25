@@ -1,14 +1,14 @@
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { AddPropertyVM } from "./viewmodels";
+import { PropertyVM } from "./viewmodels";
 
 export class PropertyModel {
     public form: FormGroup;
-    public value: AddPropertyVM;
+    public value: PropertyVM;
 
-    constructor(value?: AddPropertyVM) {
+    constructor(value?: PropertyVM) {
         this.value = value;
         if (this.value == null) {
-            this.value = new AddPropertyVM();
+            this.value = new PropertyVM();
         }
         this.value.required = true;
 

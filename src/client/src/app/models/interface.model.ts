@@ -8,8 +8,6 @@ export class InterfaceModel {
     constructor(value?: EditInterfaceVM) {
         this.value = value;
 
-        console.log(this.value);
-
         if (this.value == null) {
             this.value = new EditInterfaceVM();
         }

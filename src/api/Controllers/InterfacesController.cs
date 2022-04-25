@@ -1,12 +1,11 @@
-﻿using api.Core;
-using api.Requests;
-using api.Requests.Interfaces;
-using api.ViewModels.Interface;
-using AutoMapper;
+﻿using AutoMapper;
+using Core.ViewModels.Interface;
+using Infrastructure.Requests;
+using Infrastructure.Requests.Interfaces;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-namespace api.Controllers
+namespace Api.Controllers
 {
     [ApiController]
     [Route("[controller]")]

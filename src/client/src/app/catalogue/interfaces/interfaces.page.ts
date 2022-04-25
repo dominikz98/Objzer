@@ -17,8 +17,10 @@ export class InterfacesPage implements OnInit {
   constructor(private endpoints: InterfacesEndpoints,
     route: ActivatedRoute,
     platform: Platform) {
+
     this.isMobile = platform.is('ios') || platform.is('android');
-    route.params.subscribe(val => {
+
+    route.params.subscribe(() => {
       this.endpoints.getAll()
         .subscribe((data: ListInterfaceVM[]) => {
           this.interfaces = data;

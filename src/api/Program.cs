@@ -1,7 +1,9 @@
-using api.Core;
-using api.ViewModels.Interface;
 using FluentValidation.AspNetCore;
+using Infrastructure.Core;
+using Infrastructure.Mapper;
+using Infrastructure.Requests;
 using MediatR;
+using static Api.Validators.InterfaceValidators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,12 +11,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddMediatR(typeof(Program));
-builder.Services.AddDbContext<DBContext>();
-builder.Services.AddScoped<IHistoryLoader, HistoryLoader>();
-builder.Services.AddCors();
+builder.Services.AddMediatR(typeof(GetDataFromEnumRequest));
 builder.Services.AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<AddInterfaceVMValidator>());
-builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(typeof(HistoryVMProfile).Assembly);
+builder.Services.AddDbContext<DBContext>();
+builder.Services.AddCors();
 
 var app = builder.Build();
 
