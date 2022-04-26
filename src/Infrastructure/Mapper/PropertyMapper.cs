@@ -4,9 +4,10 @@ using Core.ViewModels.Properties;
 
 namespace Infrastructure.Mapper
 {
-    public class AddPropertyVMProfile : Profile
+    public class PropertyVMProfile : Profile
     {
-        public AddPropertyVMProfile()
-           => CreateMap<PropertyVM, CTInterfaceProperty>();
+        public PropertyVMProfile()
+           => CreateMap<PropertyVM, CTInterfaceProperty>()
+            .ReverseMap();
     }
 }

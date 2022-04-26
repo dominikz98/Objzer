@@ -6,7 +6,7 @@ namespace Core.ViewModels
     {
         public Guid Id { get; set; }
         public DateTime Timestamp { get; set; }
-        public HistoryAction Type { get; set; }
+        public HistoryAction Action { get; set; }
         public string? Changes { get; set; }
     }
 }

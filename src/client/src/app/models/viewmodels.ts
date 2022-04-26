@@ -1,3 +1,7 @@
+export class IdVM {
+    id: string;
+}
+
 export class EnumVM {
     index: number;
     name: string;
@@ -8,6 +12,8 @@ export class ListInterfaceVM {
     name: string;
     description: string;
     lastModified: Date;
+    locked: boolean;
+    archived: Date;
     historyCount: number;
     propertiesCount: number;
     objectsCount: number;
@@ -24,6 +30,8 @@ export class EditInterfaceVM {
 export class InterfaceVM {
     id: string;
     name: string;
+    locked: boolean;
+    archived: Date;
     description: string;
     properties: PropertyVM[];
     history: HistoryVM[];

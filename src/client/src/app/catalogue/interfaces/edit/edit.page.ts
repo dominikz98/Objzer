@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { ModalController, ToastController } from '@ionic/angular';
 import { map } from 'rxjs/operators';
 import { InterfacesEndpoints } from 'src/app/endpoints/interfaces.endpoints';
 import { EditPropertyModalPage } from 'src/app/modals/edit-property-modal/edit-property-modal.page';
@@ -18,7 +18,10 @@ export class EditPage implements OnInit {
   public model: InterfaceModel;
   public modified: boolean;
 
+  private id: string;
+
   constructor(private endpoints: InterfacesEndpoints,
+    private toastCtrl: ToastController,
     private modalCtrl: ModalController,
     private router: Router,
     private route: ActivatedRoute) {
@@ -29,18 +32,29 @@ export class EditPage implements OnInit {
     await this.loadIncludings();
   }
 
+  onDelete() {
+    this.endpoints.remove(this.id).subscribe();
+  }
+
+  onLock() {
+    console.log('onlock');
+  }
+
+  onArchive() {
+    console.log('onarchive');
+  }
+
   async loadInterface(): Promise<void> {
-    let id: string;
     this.route.params.subscribe(params => {
-      id = params['id'];
+      this.id = params['id'];
     });
 
-    if (id == null) {
+    if (this.id == null) {
       this.model = new InterfaceModel(null);
       return;
     }
 
-    this.endpoints.getById(id)
+    this.endpoints.getById(this.id)
       .subscribe((response: any) => {
         var casted = response?.value as EditInterfaceVM;
         this.model = new InterfaceModel(casted);
@@ -121,13 +135,13 @@ export class EditPage implements OnInit {
     if (this.model.value.id == null) {
       await this.endpoints.create(this.model.value).toPromise();
     } else {
-      await this.endpoints.update(this.model.value).toPromise();
+      this.endpoints.update(this.model.value).toPromise();
     }
 
+    // Show success toast
+
     // Navigates to url entry to destroy page lifecycle
-    this.router.navigate(['/']).then(() => {
-      this.router.navigate(['/catalogue/interfaces']);
-    });
+    this.router.navigate(['/catalogue/interfaces']);
   }
 
   onImplementationChange($event) {

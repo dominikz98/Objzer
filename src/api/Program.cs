@@ -1,3 +1,4 @@
+using Core.ViewModels;
 using FluentValidation.AspNetCore;
 using Infrastructure.Core;
 using Infrastructure.Mapper;

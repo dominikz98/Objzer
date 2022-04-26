@@ -8,6 +8,8 @@ namespace Core.Models
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
+        public bool Locked { get; set; }
+        public DateOnly? Archived { get; set; }
         public bool Deleted { get; set; }
 
         public IList<CTInterfaceAssignment> Includings { get; set; } = new List<CTInterfaceAssignment>();

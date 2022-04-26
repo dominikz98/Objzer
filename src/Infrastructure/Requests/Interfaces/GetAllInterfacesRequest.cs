@@ -46,6 +46,8 @@ namespace Infrastructure.Requests.Interfaces
                     Id = x.Id,
                     Name = x.Name,
                     Description = x.Description,
+                    Archived = x.Archived,
+                    Locked = x.Locked,
                     LastModified = history.Where(y => y.EntityId == x.Id).Max(y => y.Timestamp),
                     HistoryCount = history.Where(y => y.EntityId == x.Id).Count(),
                     PropertiesCount = x.Properties
@@ -61,6 +63,8 @@ namespace Infrastructure.Requests.Interfaces
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public int Properties { get; set; }
+        public bool Locked { get; set; }
+        public DateOnly? Archived { get; set; }
         public bool Deleted { get; set; }
     }
 }

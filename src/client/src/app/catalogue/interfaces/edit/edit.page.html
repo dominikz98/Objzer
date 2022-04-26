@@ -7,8 +7,26 @@
   <form [formGroup]="model?.form" *ngIf="model?.form" (ngSubmit)="onSave()">
 
     <ion-grid>
-      <ion-row class="ion-align-items-stretch">
 
+      <ion-row *ngIf="id">
+        <ion-col>
+          <ion-item>
+            <ion-buttons slot="start">
+              <ion-button color="warning" (click)="onLock()">
+                <ion-icon name="lock-closed-outline"></ion-icon>
+              </ion-button>
+              <ion-button color="danger" (click)="onDelete()">
+                <ion-icon name="trash-outline"></ion-icon>
+              </ion-button>
+              <ion-button color="tertiary" (click)="onArchive()">
+                <ion-icon name="archive-outline"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="ion-align-items-stretch">
         <!-- General -->
         <ion-col>
           <ion-item>
@@ -82,7 +100,8 @@
       <!-- Actions -->
       <ion-row>
         <ion-col>
-          <ion-button color="primary" [disabled]="!this.model.form.touched && !this.modified" (click)="onSave()" class="ion-margin">Save
+          <ion-button color="primary" [disabled]="!this.model.form.touched && !this.modified" (click)="onSave()"
+            class="ion-margin">Save
           </ion-button>
           <ion-button color="danger" routerLink="/catalogue/interfaces">Cancel</ion-button>
         </ion-col>

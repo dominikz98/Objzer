@@ -1,7 +1,8 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable, throwError } from 'rxjs';
-import { retry, catchError } from 'rxjs/operators';
+import { ToastController } from "@ionic/angular";
+import { EMPTY, Observable, throwError } from 'rxjs';
+import { retry, catchError, finalize } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -9,7 +10,9 @@ import { environment } from '../../environments/environment';
 })
 export class ApiClient {
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private toastCtrl: ToastController) { }
 
   // Http Options
   httpOptions = {
@@ -18,39 +21,88 @@ export class ApiClient {
     }),
   };
 
-  put<TRequest, TReponse>(url: string, model: TRequest): Observable<TReponse> {
+  delete<T>(url: string, model: T): Observable<T> {
+    let failed = false
     return this.http
-      .put<TReponse>(environment.apiUrl + '/' + url, model)
-      .pipe(catchError(this.handleError))
-  }
-
-  post<TRequest, TReponse>(url: string, model: TRequest): Observable<TReponse> {
-    return this.http
-      .post<TReponse>(environment.apiUrl + '/' + url, model)
-      .pipe(catchError(this.handleError))
-  }
-
-  get<TResult>(url: string) {
-    return this.http
-      .get<TResult>(environment.apiUrl + '/' + url)
+      .delete<T>(environment.apiUrl + '/' + url, model)
       .pipe(
-        retry(1),
-        catchError(this.handleError)
+        catchError((error) => {
+          failed = true;
+          this.displayError(error);
+          return EMPTY;
+        }),
+        finalize(() => {
+          if (!failed)
+            this.displaySuccess('Item deleted!');
+        })
       );
   }
 
-  handleError(error: any) {
-    let errorMessage = '';
-    if (error.error instanceof ErrorEvent) {
-      // Get client-side error
-      errorMessage = error.error.message;
-    } else {
-      // Get server-side error
-      errorMessage = `Error Code: ${error.status}\nMessage: ${error.message}`;
-    }
-    window.alert(errorMessage);
-    return throwError(() => {
-      return errorMessage;
+  put<TRequest, TReponse>(url: string, model: TRequest): Observable<TReponse> {
+    let failed = false
+    return this.http
+      .put<TReponse>(environment.apiUrl + '/' + url, model)
+      .pipe(
+        catchError((error) => {
+          failed = true;
+          this.displayError(error);
+          return EMPTY;
+        }),
+        finalize(() => {
+          if (!failed)
+            this.displaySuccess('Changes saved!');
+        })
+      );
+  }
+
+  post<TRequest, TReponse>(url: string, model: TRequest): Observable<TReponse> {
+    let failed = false
+    return this.http
+      .post<TReponse>(environment.apiUrl + '/' + url, model)
+      .pipe(
+        catchError((error) => {
+          failed = true;
+          this.displayError(error);
+          return EMPTY;
+        }),
+        finalize(() => {
+          if (!failed)
+            this.displaySuccess('Item created!');
+        })
+      );
+  }
+
+  get<T>(url: string): Observable<T> {
+    return this.http
+      .get<T>(environment.apiUrl + '/' + url)
+      .pipe(
+        retry(1),
+        catchError((error) => {
+          this.displayError(error);
+          return EMPTY;
+        })
+      );
+  }
+
+  async displaySuccess(notification: string) {
+    const toast = await this.toastCtrl.create({
+      message: notification,
+      icon: 'checkmark-done-outline',
+      position: 'top',
+      color: 'success',
+      duration: 2000
     });
+    toast.present();
+  }
+
+  async displayError(error: any) {
+    const toast = await this.toastCtrl.create({
+      message: 'Error occured!',
+      icon: 'checkmark-done-outline',
+      position: 'top',
+      color: 'danger',
+      duration: 2000
+    });
+    toast.present();
   }
 }
