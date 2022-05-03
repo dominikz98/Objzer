@@ -5,29 +5,45 @@
         public T? Value { get; set; }
         public RequestResultStatus Status { get; set; }
         public string? Message { get; set; }
-    }
 
-    internal static class RequestResult
-    {
-        public static RequestResult<T> Success<T>(T value)
-            => new()
-            {
-                Value = value,
-                Status = RequestResultStatus.SUCCESS
-            };
+        public static RequestResult<T> Success(T value)
+           => new()
+           {
+               Value = value,
+               Status = RequestResultStatus.SUCCESS
+           };
 
-        public static RequestResult<T> Null<T>()
+        public static RequestResult<T> Null()
             => new()
             {
                 Message = "Object not found!",
                 Status = RequestResultStatus.NOT_FOUND
             };
 
-        public static RequestResult<T> Error<T>(string error)
+        public static RequestResult<T> Error(string error)
             => new()
             {
                 Message = error,
                 Status = RequestResultStatus.VALIDATION_ERROR
+            };
+    }
+
+    public class EmptyRequestResult
+    {
+        public RequestResultStatus Status { get; set; }
+        public string? Message { get; set; }
+
+        public static EmptyRequestResult Success()
+           => new()
+           {
+               Status = RequestResultStatus.SUCCESS
+           };
+
+        public static EmptyRequestResult Null()
+            => new()
+            {
+                Message = "Object not found!",
+                Status = RequestResultStatus.NOT_FOUND
             };
     }
 

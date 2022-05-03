@@ -12,13 +12,16 @@
         <ion-col>
           <ion-item>
             <ion-buttons slot="start">
-              <ion-button color="warning" (click)="onLock()">
+              <ion-button color="warning" *ngIf="!model.value.locked" (click)="onLock()">
                 <ion-icon name="lock-closed-outline"></ion-icon>
               </ion-button>
-              <ion-button color="danger" (click)="onDelete()">
+              <ion-button color="warning" *ngIf="model.value.locked" (click)="onUnlock()">
+                <ion-icon name="lock-open-outline"></ion-icon>
+              </ion-button>
+              <ion-button color="danger" [disabled]="this.model.value.locked" (click)="onDelete()">
                 <ion-icon name="trash-outline"></ion-icon>
               </ion-button>
-              <ion-button color="tertiary" (click)="onArchive()">
+              <ion-button color="tertiary" [disabled]="this.model.value.locked" (click)="onArchive()">
                 <ion-icon name="archive-outline"></ion-icon>
               </ion-button>
             </ion-buttons>
@@ -60,14 +63,14 @@
         <ion-col>
           <ion-toolbar>
             <ion-buttons slot="start">
-              <ion-button (click)="addProperty()">
+              <ion-button [disabled]="this.model.value.locked" (click)="addProperty()">
                 <ion-icon name="add-circle"></ion-icon>
               </ion-button>
             </ion-buttons>
             <ion-title>Properties</ion-title>
           </ion-toolbar>
           <ion-list>
-            <ion-item *ngFor="let property of model.value.properties" button="true" (click)="editProperty(property)">
+            <ion-item *ngFor="let property of model.value.properties" [disabled]="this.model.value.locked" button="true" (click)="editProperty(property)">
               <ion-grid>
                 <ion-row>
                   <ion-col *ngIf="property.required" size="0.3">
@@ -100,7 +103,7 @@
       <!-- Actions -->
       <ion-row>
         <ion-col>
-          <ion-button color="primary" [disabled]="!this.model.form.touched && !this.modified" (click)="onSave()"
+          <ion-button color="primary" [disabled]="this.model.value.locked || (!this.model.form.touched && !this.modified)" (click)="onSave()"
             class="ion-margin">Save
           </ion-button>
           <ion-button color="danger" routerLink="/catalogue/interfaces">Cancel</ion-button>

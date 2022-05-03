@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { ApiClient } from './apiclient';
 import { EditInterfaceVM, IdVM, InterfaceVM, ListInterfaceVM } from '../models/viewmodels';
 
@@ -27,6 +27,22 @@ export class InterfacesEndpoints {
 
   update(model: EditInterfaceVM): Observable<InterfaceVM> {
     return this.client.put<EditInterfaceVM, InterfaceVM>(this.route, model);
+  }
+
+  lock(id: string): Observable<any> {
+    return this.client.putByUrl(`${this.route}/lock/${id}`);
+  }
+
+  unlock(id: string): Observable<any> {
+    return this.client.putByUrl(`${this.route}/unlock/${id}`);
+  }
+
+  archive(id: string): Observable<any> {
+    return this.client.putByUrl(`${this.route}/archive/${id}`);
+  }
+
+  restore(id: string): Observable<any> {
+    return this.client.putByUrl(`${this.route}/restore/${id}`);
   }
 
   remove(id: string): Observable<IdVM> {

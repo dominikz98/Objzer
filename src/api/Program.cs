@@ -1,4 +1,4 @@
-using Core.ViewModels;
+using Core.Models;
 using FluentValidation.AspNetCore;
 using Infrastructure.Core;
 using Infrastructure.Mapper;
@@ -17,6 +17,10 @@ builder.Services.AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContai
 builder.Services.AddAutoMapper(typeof(HistoryVMProfile).Assembly);
 builder.Services.AddDbContext<DBContext>();
 builder.Services.AddCors();
+
+// Add generic requests
+builder.Services.AddTransient<IRequestHandler<UnLockEntityRequest<CTInterface>, EmptyRequestResult>, UnLockEntityRequestHandler<CTInterface>>();
+builder.Services.AddTransient<IRequestHandler<RestoreOrArchiveEntityRequest<CTInterface>, EmptyRequestResult>, RestoreOrArchiveEntityRequestHandler<CTInterface>>();
 
 var app = builder.Build();
 

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Infrastructure.Migrations
 {
-    public partial class Interfaces : Migration
+    public partial class InterfaceModels : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -32,6 +32,8 @@ namespace Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "TEXT", nullable: false),
                     Name = table.Column<string>(type: "TEXT", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
+                    Locked = table.Column<bool>(type: "INTEGER", nullable: false),
+                    Archived = table.Column<DateOnly>(type: "TEXT", nullable: true),
                     Deleted = table.Column<bool>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>

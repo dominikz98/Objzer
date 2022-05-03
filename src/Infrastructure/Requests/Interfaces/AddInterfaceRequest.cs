@@ -35,7 +35,7 @@ namespace Infrastructure.Requests.Interfaces
                 .AnyAsync(cancellationToken);
 
             if (alreadyExists)
-                return RequestResult.Error<InterfaceVM>("Interface with same name already exists!");
+                return RequestResult<InterfaceVM>.Error("Interface with same name already exists!");
 
             // create new interface
             var @interface = new CTInterface()
@@ -59,7 +59,7 @@ namespace Infrastructure.Requests.Interfaces
             @interface.History = await _context.Set<CTHistory>().GetByEntity(@interface.Id);
 
             var vm = _mapper.Map<InterfaceVM>(@interface);
-            return RequestResult.Success(vm);
+            return RequestResult<InterfaceVM>.Success(vm);
         }
 
         private async Task AddIncludings(CTInterface @interface, List<Guid> includingIds, CancellationToken cancellationToken)

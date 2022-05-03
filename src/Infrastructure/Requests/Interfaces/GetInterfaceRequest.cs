@@ -40,13 +40,13 @@ namespace Infrastructure.Requests.Interfaces
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (@interface is null)
-                return RequestResult.Null<InterfaceVM>();
+                return RequestResult<InterfaceVM>.Null();
 
             // attach history
             @interface.History = await _context.Set<CTHistory>().GetByEntity(@interface.Id);
 
             var vm = _mapper.Map<InterfaceVM>(@interface);
-            return RequestResult.Success(vm);
+            return RequestResult<InterfaceVM>.Success(vm);
         }
     }
 }

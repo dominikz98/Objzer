@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Core.Models;
 using Core.ViewModels.Interface;
 using Infrastructure.Requests;
 using Infrastructure.Requests.Interfaces;
@@ -52,6 +53,54 @@ namespace Api.Controllers
             return result.Status switch
             {
                 RequestResultStatus.SUCCESS => Ok(result.Value),
+                RequestResultStatus.NOT_FOUND => NotFound(result.Message),
+                _ => throw new NotImplementedException()
+            };
+        }
+
+        [HttpPut("lock/{id:guid}")]
+        public async Task<IActionResult> Lock(Guid id, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(new UnLockEntityRequest<CTInterface>(id, true), cancellationToken);
+            return result.Status switch
+            {
+                RequestResultStatus.SUCCESS => Ok(),
+                RequestResultStatus.NOT_FOUND => NotFound(result.Message),
+                _ => throw new NotImplementedException()
+            };
+        }
+
+        [HttpPut("unlock/{id:guid}")]
+        public async Task<IActionResult> Unlock(Guid id, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(new UnLockEntityRequest<CTInterface>(id, false), cancellationToken);
+            return result.Status switch
+            {
+                RequestResultStatus.SUCCESS => Ok(),
+                RequestResultStatus.NOT_FOUND => NotFound(result.Message),
+                _ => throw new NotImplementedException()
+            };
+        }
+
+        [HttpPut("archive/{id:guid}")]
+        public async Task<IActionResult> Archive(Guid id, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(new RestoreOrArchiveEntityRequest<CTInterface>(id, DateOnly.FromDateTime(DateTime.Now)), cancellationToken);
+            return result.Status switch
+            {
+                RequestResultStatus.SUCCESS => Ok(),
+                RequestResultStatus.NOT_FOUND => NotFound(result.Message),
+                _ => throw new NotImplementedException()
+            };
+        }
+
+        [HttpPut("restore/{id:guid}")]
+        public async Task<IActionResult> Restore(Guid id, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(new RestoreOrArchiveEntityRequest<CTInterface>(id, null), cancellationToken);
+            return result.Status switch
+            {
+                RequestResultStatus.SUCCESS => Ok(),
                 RequestResultStatus.NOT_FOUND => NotFound(result.Message),
                 _ => throw new NotImplementedException()
             };

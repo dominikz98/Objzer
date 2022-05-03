@@ -34,7 +34,7 @@ namespace Infrastructure.Requests.Interfaces
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (@interface is null)
-                return RequestResult.Null<IdVM>();
+                return RequestResult<IdVM>.Null();
 
             // interface
             @interface.Deleted = true;
@@ -50,7 +50,7 @@ namespace Infrastructure.Requests.Interfaces
             _context.Update(@interface);
             await _context.SaveChangesAsync(cancellationToken);
 
-            return RequestResult.Success(new IdVM() { Id = request.Id });
+            return RequestResult<IdVM>.Success(new IdVM() { Id = request.Id });
         }
     }
 }

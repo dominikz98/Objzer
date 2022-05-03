@@ -25,6 +25,7 @@ export class EditInterfaceVM {
     description: string;
     properties: PropertyVM[];
     includingIds: string[];
+    locked: boolean;
 }
 
 export class InterfaceVM {

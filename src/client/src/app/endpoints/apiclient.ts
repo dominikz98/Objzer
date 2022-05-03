@@ -55,6 +55,23 @@ export class ApiClient {
       );
   }
 
+  putByUrl(url: string): Observable<any> {
+    let failed = false
+    return this.http
+      .put(environment.apiUrl + '/' + url, {})
+      .pipe(
+        catchError((error) => {
+          failed = true;
+          this.displayError(error);
+          return EMPTY;
+        }),
+        finalize(() => {
+          if (!failed)
+            this.displaySuccess('Changes saved!');
+        })
+      );
+  }
+
   post<TRequest, TReponse>(url: string, model: TRequest): Observable<TReponse> {
     let failed = false
     return this.http

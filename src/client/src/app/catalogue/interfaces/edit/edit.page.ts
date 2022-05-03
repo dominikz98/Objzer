@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalController, ToastController } from '@ionic/angular';
+import { promise } from 'protractor';
 import { map } from 'rxjs/operators';
 import { InterfacesEndpoints } from 'src/app/endpoints/interfaces.endpoints';
 import { EditPropertyModalPage } from 'src/app/modals/edit-property-modal/edit-property-modal.page';
@@ -21,15 +22,18 @@ export class EditPage implements OnInit {
   private id: string;
 
   constructor(private endpoints: InterfacesEndpoints,
-    private toastCtrl: ToastController,
     private modalCtrl: ModalController,
     private router: Router,
     private route: ActivatedRoute) {
   }
 
   async ngOnInit() {
-    await this.loadInterface();
-    await this.loadIncludings();
+    this.route.params.subscribe(async params => {
+      this.id = params['id'];
+
+      this.loadInterface();
+      this.loadIncludings();
+    });
   }
 
   onDelete() {
@@ -37,18 +41,26 @@ export class EditPage implements OnInit {
   }
 
   onLock() {
-    console.log('onlock');
+    this.endpoints.lock(this.id)
+      .subscribe(() => {
+        this.model.value.locked = true;
+        this.model.form.disable();
+      });
+  }
+
+  onUnlock() {
+    this.endpoints.unlock(this.id)
+      .subscribe(() => {
+        this.model.value.locked = false;
+        this.model.form.enable();
+      });
   }
 
   onArchive() {
     console.log('onarchive');
   }
 
-  async loadInterface(): Promise<void> {
-    this.route.params.subscribe(params => {
-      this.id = params['id'];
-    });
-
+  loadInterface() {
     if (this.id == null) {
       this.model = new InterfaceModel(null);
       return;
@@ -58,18 +70,21 @@ export class EditPage implements OnInit {
       .subscribe((response: any) => {
         var casted = response?.value as EditInterfaceVM;
         this.model = new InterfaceModel(casted);
+
+        if (this.model.value.locked) {
+          this.model.form.disable();
+        }
       });
   }
 
-  async loadIncludings(): Promise<void> {
-    this.endpoints.getAll()
-      .pipe(
-        map(data =>
-          data.filter(entry => {
-            return this.model.value.id != null && entry.id != this.model.value.id;
-          })
-        )
+  loadIncludings() {
+    this.endpoints.getAll().pipe(
+      map(data =>
+        data.filter(entry => {
+          return this.id != null && entry.id != this.id;
+        })
       )
+    )
       .subscribe((data: ListInterfaceVM[]) => {
         this.interfaces = data;
       });

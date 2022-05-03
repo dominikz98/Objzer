@@ -39,7 +39,7 @@ namespace Infrastructure.Requests.Interfaces
                 .FirstOrDefaultAsync(cancellationToken);
 
             if (@interface is null)
-                return RequestResult.Null<InterfaceVM>();
+                return RequestResult<InterfaceVM>.Null();
 
             // mappings
             @interface.Name = request.Name;
@@ -55,7 +55,7 @@ namespace Infrastructure.Requests.Interfaces
             @interface.History = await _context.Set<CTHistory>().GetByEntity(@interface.Id);
 
             var vm = _mapper.Map<InterfaceVM>(@interface);
-            return RequestResult.Success(vm);
+            return RequestResult<InterfaceVM>.Success(vm);
         }
 
         private async Task UpdateIncludings(CTInterface @interface, List<Guid> currentIncludingIds, CancellationToken cancellationToken)
