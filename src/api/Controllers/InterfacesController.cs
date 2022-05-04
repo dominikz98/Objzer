@@ -45,7 +45,7 @@ namespace Api.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody] EditInterfaceVM vm, CancellationToken cancellationToken)
+        public async Task<IActionResult> Update([FromBody] InterfaceVM vm, CancellationToken cancellationToken)
         {
             var request = _mapper.Map<EditInterfaceRequest>(vm);
             var result = await _mediator.Send(request, cancellationToken);

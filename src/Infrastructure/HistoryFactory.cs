@@ -1,4 +1,6 @@
-﻿using Core.Models;
+﻿using Core.Constants;
+using Core.DTOs;
+using Core.Models;
 using Core.Models.Contracts;
 using Core.Models.Enumerations;
 using Microsoft.EntityFrameworkCore;
@@ -34,7 +36,7 @@ namespace Infrastructure.Core
 
         private static string CreateAddChanges(EntityEntry entry)
         {
-            var changes = new List<AddChange>();
+            var changes = new List<HistoryChange>();
             foreach (var property in entry.Properties)
             {
                 if (property.Metadata?.PropertyInfo?.PropertyType is null)
@@ -49,14 +51,14 @@ namespace Infrastructure.Core
 
                 ThrowErrorIfRequired(property);
 
-                changes.Add(new AddChange()
+                changes.Add(new HistoryChange()
                 {
                     Name = property.Metadata.Name,
-                    Value = property.CurrentValue
+                    New = property.CurrentValue
                 });
             }
 
-            return JsonSerializer.Serialize(changes, new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            return JsonSerializer.Serialize(changes, JsonConstants.Options);
         }
 
         public static CTHistory? Update<T>(EntityEntry<T> entry) where T : class, IEntity
@@ -71,10 +73,13 @@ namespace Infrastructure.Core
 
         private static string CreateUpdateChanges(EntityEntry entry)
         {
-            var changes = new List<UpdChange>();
+            var changes = new List<HistoryChange>();
             foreach (var property in entry.Properties)
             {
                 if (!property.IsModified)
+                    continue;
+
+                if (property.CurrentValue?.ToString() == property.OriginalValue?.ToString())
                     continue;
 
                 if (property.Metadata?.PropertyInfo?.PropertyType is null)
@@ -85,7 +90,7 @@ namespace Infrastructure.Core
 
                 ThrowErrorIfRequired(property);
 
-                changes.Add(new UpdChange()
+                changes.Add(new HistoryChange()
                 {
                     Name = property.Metadata.Name,
                     New = property.CurrentValue,
@@ -93,7 +98,7 @@ namespace Infrastructure.Core
                 });
             }
 
-            return JsonSerializer.Serialize(changes, new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+            return JsonSerializer.Serialize(changes, JsonConstants.Options);
         }
 
         public CTHistory Delete<T>(T entity) where T : class, IEntity
@@ -176,18 +181,5 @@ namespace Infrastructure.Core
 
         private static T? GetDefaultGeneric<T>()
             => default;
-
-        class AddChange
-        {
-            public string Name { get; set; } = string.Empty;
-            public object? Value { get; set; }
-        }
-
-        class UpdChange
-        {
-            public string Name { get; set; } = string.Empty;
-            public object? New { get; set; }
-            public object? Old { get; set; }
-        }
     }
 }

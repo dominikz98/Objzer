@@ -36,20 +36,11 @@ namespace Infrastructure.Requests.Interfaces
             if (@interface is null)
                 return RequestResult<IdVM>.Null();
 
-            // interface
-            @interface.Deleted = true;
+            _context.RemoveRange(@interface.Properties);
+            _context.RemoveRange(@interface.Includings);
+            _context.Remove(@interface);
 
-            // properties
-            foreach (var property in @interface.Properties)
-                property.Deleted = true;
-
-            // includings
-            foreach (var include in @interface.Includings)
-                include.Deleted = true;
-
-            _context.Update(@interface);
             await _context.SaveChangesAsync(cancellationToken);
-
             return RequestResult<IdVM>.Success(new IdVM() { Id = request.Id });
         }
     }

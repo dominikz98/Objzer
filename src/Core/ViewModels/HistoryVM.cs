@@ -1,4 +1,5 @@
-﻿using Core.Models.Enumerations;
+﻿using Core.DTOs;
+using Core.Models.Enumerations;
 
 namespace Core.ViewModels
 {
@@ -7,6 +8,6 @@ namespace Core.ViewModels
         public Guid Id { get; set; }
         public DateTime Timestamp { get; set; }
         public HistoryAction Action { get; set; }
-        public string? Changes { get; set; }
+        public List<HistoryChange> Changes { get; set; } = new();
     }
 }

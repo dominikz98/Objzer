@@ -18,11 +18,11 @@
               <ion-button color="warning" *ngIf="model.value.locked" (click)="onUnlock()">
                 <ion-icon name="lock-open-outline"></ion-icon>
               </ion-button>
-              <ion-button color="danger" [disabled]="this.model.value.locked" (click)="onDelete()">
-                <ion-icon name="trash-outline"></ion-icon>
-              </ion-button>
               <ion-button color="tertiary" [disabled]="this.model.value.locked" (click)="onArchive()">
                 <ion-icon name="archive-outline"></ion-icon>
+              </ion-button>
+              <ion-button color="danger" [disabled]="this.model.value.locked" (click)="onDelete()">
+                <ion-icon name="trash-outline"></ion-icon>
               </ion-button>
             </ion-buttons>
           </ion-item>

@@ -15,7 +15,7 @@ namespace Api.Validators
         }
     }
 
-    public class EditInterfaceVMVMValidator : AbstractValidator<EditInterfaceVM>
+    public class EditInterfaceVMVMValidator : AbstractValidator<InterfaceVM>
     {
         public EditInterfaceVMVMValidator()
             => RuleFor(x => x.Id).NotEmpty();

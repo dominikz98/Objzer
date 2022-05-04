@@ -27,7 +27,9 @@ namespace Infrastructure.Requests.Interfaces
                     Id = x.Id,
                     Name = x.Name,
                     Description = x.Description,
-                    Properties = x.Properties.Count
+                    Properties = x.Properties.Count,
+                    Locked = x.Locked,
+                    Archived = x.Archived
                 })
                 .OrderBy(x => x.Name)
                 .ToListAsync(cancellationToken);
