@@ -175,4 +175,40 @@ export class EditPage implements OnInit {
       }
     }
   }
+
+  getHistoryColor(action: number): string {
+    switch (action) {
+      case 0:
+        return 'item-history-add-color'
+      case 1:
+        return 'item-history-upd-color'
+      case 2:
+      case 3:
+        return 'item-history-lock-color'
+      case 4:
+      case 5:
+        return 'item-history-archive-color'
+      default:
+        return;
+    }
+  }
+
+  getHistoryName(action: number): string {
+    switch (action) {
+      case 0:
+        return 'Add'
+      case 1:
+        return 'Update'
+      case 2:
+        return 'Lock'
+      case 3:
+        return 'Unlock'
+      case 4:
+        return 'Archive'
+      case 5:
+        return 'Restore'
+      default:
+        return;
+    }
+  }
 }

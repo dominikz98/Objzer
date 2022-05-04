@@ -7,3 +7,19 @@
 .color-yellow {
     color: orange;
 }
+
+.item-history-add-color {
+    --ion-item-background: rgb(55, 84, 66);
+}
+
+.item-history-upd-color {
+    --ion-item-background: rgb(47, 66, 79);
+}
+
+.item-history-lock-color {
+    --ion-item-background: rgb(138, 129, 34);
+}
+
+.item-history-archive-color {
+    --ion-item-background: rgb(87, 35, 110);
+}

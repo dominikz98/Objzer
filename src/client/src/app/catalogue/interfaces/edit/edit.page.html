@@ -70,7 +70,8 @@
             <ion-title>Properties</ion-title>
           </ion-toolbar>
           <ion-list>
-            <ion-item *ngFor="let property of model.value.properties" [disabled]="this.model.value.locked" button="true" (click)="editProperty(property)">
+            <ion-item *ngFor="let property of model.value.properties" [disabled]="this.model.value.locked" button="true"
+              (click)="editProperty(property)">
               <ion-grid>
                 <ion-row>
                   <ion-col *ngIf="property.required" size="0.3">
@@ -93,17 +94,35 @@
         </ion-col>
 
         <!-- History -->
-        <ion-col>
-          <!-- <ion-item>
+        <ion-col *ngIf="id">
+          <ion-item>
             <h2>History</h2>
-          </ion-item> -->
+          </ion-item>
+          <ion-list>
+            <ion-item [class]="getHistoryColor(history.action)" *ngFor="let history of model.value.history">
+              <ion-grid>
+                <ion-row>
+                  <ion-col class="ion-align-self-center">
+                    <b> {{ getHistoryName(history.action) }} </b>
+                  </ion-col>
+                  <ion-col class="ion-align-self-center">
+                    <b> {{ history.timestamp | date }} </b>
+                  </ion-col>
+                  <ion-col size="1" class="ion-align-self-center">
+                    <b> {{ history.changes.length }} </b>
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ion-item>
+          </ion-list>
         </ion-col>
       </ion-row>
 
       <!-- Actions -->
       <ion-row>
         <ion-col>
-          <ion-button color="primary" [disabled]="this.model.value.locked || (!this.model.form.touched && !this.modified)" (click)="onSave()"
+          <ion-button color="primary"
+            [disabled]="this.model.value.locked || (!this.model.form.touched && !this.modified)" (click)="onSave()"
             class="ion-margin">Save
           </ion-button>
           <ion-button color="danger" routerLink="/catalogue/interfaces">Cancel</ion-button>
