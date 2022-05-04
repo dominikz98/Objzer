@@ -20,9 +20,9 @@ namespace Infrastructure.Requests.Interfaces
     public class EditInterfaceRequestHandler : IRequestHandler<EditInterfaceRequest, RequestResult<InterfaceVM>>
     {
         private readonly IMapper _mapper;
-        private readonly DBContext _context;
+        private readonly ObjzerContext _context;
 
-        public EditInterfaceRequestHandler(IMapper mapper, DBContext context)
+        public EditInterfaceRequestHandler(IMapper mapper, ObjzerContext context)
         {
             _mapper = mapper;
             _context = context;

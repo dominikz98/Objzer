@@ -11,9 +11,9 @@ namespace Infrastructure.Requests.Interfaces
 
     public class GetContractsRequestHandler : IRequestHandler<GetAllInterfacesRequest, IReadOnlyCollection<ListInterfaceVM>>
     {
-        private readonly DBContext _context;
+        private readonly ObjzerContext _context;
 
-        public GetContractsRequestHandler(DBContext context)
+        public GetContractsRequestHandler(ObjzerContext context)
         {
             _context = context;
         }
@@ -22,7 +22,6 @@ namespace Infrastructure.Requests.Interfaces
         {
             // load from db
             var interfaces = await _context.Set<CTInterface>()
-                .AsQueryable()
                 .Select(x => new InterfaceDTO
                 {
                     Id = x.Id,
@@ -30,6 +29,7 @@ namespace Infrastructure.Requests.Interfaces
                     Description = x.Description,
                     Properties = x.Properties.Count
                 })
+                .OrderBy(x => x.Name)
                 .ToListAsync(cancellationToken);
 
             // load history

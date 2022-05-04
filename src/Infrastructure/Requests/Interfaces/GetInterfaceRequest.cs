@@ -21,9 +21,9 @@ namespace Infrastructure.Requests.Interfaces
     public class GetInterfaceRequestHandler : IRequestHandler<GetInterfaceRequest, RequestResult<InterfaceVM>>
     {
         private readonly IMapper _mapper;
-        private readonly DBContext _context;
+        private readonly ObjzerContext _context;
 
-        public GetInterfaceRequestHandler(IMapper mapper, DBContext context)
+        public GetInterfaceRequestHandler(IMapper mapper, ObjzerContext context)
         {
             _mapper = mapper;
             _context = context;

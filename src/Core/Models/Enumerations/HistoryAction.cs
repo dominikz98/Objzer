@@ -4,6 +4,10 @@
     {
         Add,
         Update,
-        Delete
+        Delete,
+        Lock,
+        Unlock,
+        Archive,
+        Restore
     }
 }

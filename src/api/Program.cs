@@ -15,7 +15,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddMediatR(typeof(GetDataFromEnumRequest));
 builder.Services.AddFluentValidation(x => x.RegisterValidatorsFromAssemblyContaining<AddInterfaceVMValidator>());
 builder.Services.AddAutoMapper(typeof(HistoryVMProfile).Assembly);
-builder.Services.AddDbContext<DBContext>();
+builder.Services.AddDbContext<ObjzerContext>();
+builder.Services.AddScoped<HistoryFactory>();
 builder.Services.AddCors();
 
 // Add generic requests

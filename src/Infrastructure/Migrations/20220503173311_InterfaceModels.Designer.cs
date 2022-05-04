@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Migrations
 {
-    [DbContext(typeof(DBContext))]
+    [DbContext(typeof(ObjzerContext))]
     [Migration("20220503173311_InterfaceModels")]
     partial class InterfaceModels
     {

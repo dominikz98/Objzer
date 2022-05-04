@@ -19,9 +19,9 @@ namespace Infrastructure.Requests
 
     public class RestoreOrArchiveEntityRequestHandler<T> : IRequestHandler<RestoreOrArchiveEntityRequest<T>, EmptyRequestResult> where T : class, IEntity
     {
-        private readonly DBContext _context;
+        private readonly ObjzerContext _context;
 
-        public RestoreOrArchiveEntityRequestHandler(DBContext context)
+        public RestoreOrArchiveEntityRequestHandler(ObjzerContext context)
         {
             _context = context;
         }
@@ -35,9 +35,10 @@ namespace Infrastructure.Requests
             if (entity is null)
                 return EmptyRequestResult.Null();
 
-            entity.Archived = request.Archived;
-            _context.Update(entity);
-            await _context.SaveChangesAsync(cancellationToken);
+            if (request.Archived is not null)
+                await _context.ArchiveAsync(entity, cancellationToken);
+            else
+                await _context.RestoreAsync(entity, cancellationToken);
 
             return EmptyRequestResult.Success();
         }

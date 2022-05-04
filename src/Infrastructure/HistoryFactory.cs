@@ -3,68 +3,78 @@ using Core.Models.Contracts;
 using Core.Models.Enumerations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Reflection;
 using System.Text.Json;
 
 namespace Infrastructure.Core
 {
-    public static class HistoryFactory
+    public class HistoryFactory
     {
-        public static CTHistory? Create(EntityEntry entry)
+        private readonly List<Guid> _excludeIds = new();
+
+        public CTHistory? Create<T>(EntityEntry<T> entry) where T : class, IEntity
         {
-            var id = ExtractEntityId(entry);
-            if (id is null)
+            if (_excludeIds.Contains(entry.Entity.Id))
                 return null;
 
-            HistoryAction action;
-            string? changes;
-            switch (entry.State)
+            return entry.State switch
             {
-                case EntityState.Deleted:
-                    changes = null;
-                    action = HistoryAction.Delete;
-                    break;
-                case EntityState.Modified:
-                    changes = CreateChanges(entry, HistoryAction.Update);
-                    action = HistoryAction.Update;
-                    break;
-                case EntityState.Added:
-                    changes = CreateChanges(entry, HistoryAction.Add);
-                    action = HistoryAction.Add;
-                    break;
-
-                case EntityState.Detached:
-                case EntityState.Unchanged:
-                default:
-                    return null;
-            }
-
-            return new CTHistory()
-            {
-                Id = Guid.NewGuid(),
-                Type = entry.Entity.GetType().Name,
-                EntityId = id.Value,
-                Timestamp = DateTime.UtcNow,
-                Action = action,
-                Changes = changes
+                EntityState.Added => Add(entry),
+                EntityState.Modified => Update(entry),
+                EntityState.Detached or EntityState.Unchanged or _ => null
             };
         }
 
-        private static Guid? ExtractEntityId(EntityEntry entry)
+        public static CTHistory Add<T>(EntityEntry<T> entry) where T : class, IEntity
         {
-            if (entry.Entity is IEntity entity)
-                return entity.Id;
-            else if (entry.Entity is ISubEntity subEntity)
-                return subEntity.ReferenceId;
-
-            return null;
+            var history = CreateHistory(entry.Entity, HistoryAction.Add);
+            history.Changes = CreateAddChanges(entry);
+            return history;
         }
 
-        private static string CreateChanges(EntityEntry entry, HistoryAction type)
+        private static string CreateAddChanges(EntityEntry entry)
         {
-            var changes = new List<Change>();
+            var changes = new List<AddChange>();
             foreach (var property in entry.Properties)
             {
-                if (type == HistoryAction.Update && !property.IsModified)
+                if (property.Metadata?.PropertyInfo?.PropertyType is null)
+                    continue;
+
+                var type = property.Metadata.PropertyInfo.PropertyType;
+                if (!IsSimpleType(type))
+                    continue;
+
+                if (property.CurrentValue?.ToString() == GetDefault(type)?.ToString())
+                    continue;
+
+                ThrowErrorIfRequired(property);
+
+                changes.Add(new AddChange()
+                {
+                    Name = property.Metadata.Name,
+                    Value = property.CurrentValue
+                });
+            }
+
+            return JsonSerializer.Serialize(changes, new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+        }
+
+        public static CTHistory? Update<T>(EntityEntry<T> entry) where T : class, IEntity
+        {
+            var history = CreateHistory(entry.Entity, HistoryAction.Update);
+            if (history is null)
+                return null;
+
+            history.Changes = CreateUpdateChanges(entry);
+            return history;
+        }
+
+        private static string CreateUpdateChanges(EntityEntry entry)
+        {
+            var changes = new List<UpdChange>();
+            foreach (var property in entry.Properties)
+            {
+                if (!property.IsModified)
                     continue;
 
                 if (property.Metadata?.PropertyInfo?.PropertyType is null)
@@ -73,19 +83,63 @@ namespace Infrastructure.Core
                 if (!IsSimpleType(property.Metadata.PropertyInfo.PropertyType))
                     continue;
 
-                if (type == HistoryAction.Add && property.CurrentValue is null)
-                    continue;
+                ThrowErrorIfRequired(property);
 
-                changes.Add(new Change()
+                changes.Add(new UpdChange()
                 {
                     Name = property.Metadata.Name,
                     New = property.CurrentValue,
-                    Old = type == HistoryAction.Update ? property.CurrentValue : null
+                    Old = property.OriginalValue
                 });
             }
 
             return JsonSerializer.Serialize(changes, new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
         }
+
+        public CTHistory Delete<T>(T entity) where T : class, IEntity
+        {
+            var history = CreateHistory(entity, HistoryAction.Delete);
+            _excludeIds.Add(history.EntityId);
+            return history;
+        }
+
+        public CTHistory Lock<T>(T entry) where T : class, IEntity
+        {
+            var history = CreateHistory(entry, HistoryAction.Lock);
+            _excludeIds.Add(history.EntityId);
+            return history;
+        }
+
+        public CTHistory Unlock<T>(T entry) where T : class, IEntity
+        {
+            var history = CreateHistory(entry, HistoryAction.Unlock);
+            _excludeIds.Add(history.EntityId);
+            return history;
+        }
+
+        public CTHistory Archive<T>(T entry) where T : class, IEntity
+        {
+            var history = CreateHistory(entry, HistoryAction.Archive);
+            _excludeIds.Add(history.EntityId);
+            return history;
+        }
+
+        public CTHistory Restore<T>(T entry) where T : class, IEntity
+        {
+            var history = CreateHistory(entry, HistoryAction.Restore);
+            _excludeIds.Add(history.EntityId);
+            return history;
+        }
+
+        private static CTHistory CreateHistory<T>(T entity, HistoryAction action) where T : class, IEntity
+            => new()
+            {
+                Id = Guid.NewGuid(),
+                Type = entity.GetType().Name,
+                EntityId = entity.Id,
+                Timestamp = DateTime.UtcNow,
+                Action = action,
+            };
 
         private static bool IsSimpleType(Type type)
             => type.IsPrimitive
@@ -105,7 +159,31 @@ namespace Infrastructure.Core
                     && type.GetGenericTypeDefinition() == typeof(Nullable<>)
                     && IsSimpleType(type.GetGenericArguments()[0]));
 
-        class Change
+        private static void ThrowErrorIfRequired(PropertyEntry property)
+        {
+            if (property.Metadata.PropertyInfo?.Name == nameof(IEntity.Locked))
+                throw new ArgumentException($"Property '{nameof(IEntity.Locked)}' can not be changed! Use {nameof(ObjzerContext.LockAsync)} or {nameof(ObjzerContext.UnlockAsync)} instead!");
+
+            if (property.Metadata.PropertyInfo?.Name == nameof(IEntity.Archived))
+                throw new ArgumentException($"Property '{nameof(IEntity.Archived)}' can not be changed! Use {nameof(ObjzerContext.ArchiveAsync)} or {nameof(ObjzerContext.RestoreAsync)} instead!");
+        }
+
+        private static object? GetDefault(Type t)
+            => typeof(HistoryFactory)
+                .GetMethod(nameof(GetDefaultGeneric), BindingFlags.Static | BindingFlags.NonPublic)
+                ?.MakeGenericMethod(t)
+                ?.Invoke(null, null);
+
+        private static T? GetDefaultGeneric<T>()
+            => default;
+
+        class AddChange
+        {
+            public string Name { get; set; } = string.Empty;
+            public object? Value { get; set; }
+        }
+
+        class UpdChange
         {
             public string Name { get; set; } = string.Empty;
             public object? New { get; set; }

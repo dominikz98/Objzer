@@ -19,9 +19,9 @@ namespace Infrastructure.Requests
 
     public class UnLockEntityRequestHandler<T> : IRequestHandler<UnLockEntityRequest<T>, EmptyRequestResult> where T : class, IEntity
     {
-        private readonly DBContext _context;
+        private readonly ObjzerContext _context;
 
-        public UnLockEntityRequestHandler(DBContext context)
+        public UnLockEntityRequestHandler(ObjzerContext context)
         {
             _context = context;
         }
@@ -35,10 +35,12 @@ namespace Infrastructure.Requests
             if (entity is null)
                 return EmptyRequestResult.Null();
 
-            entity.Locked = request.Lock;
-            _context.Update(entity);
-            await _context.SaveChangesAsync(cancellationToken);
+            if (request.Lock)
+                await _context.LockAsync(entity, cancellationToken);
+            else
+                await _context.UnlockAsync(entity, cancellationToken);
 
+            await _context.SaveChangesAsync(cancellationToken);
             return EmptyRequestResult.Success();
         }
     }

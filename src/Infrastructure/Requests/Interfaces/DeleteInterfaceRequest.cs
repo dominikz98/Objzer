@@ -18,9 +18,9 @@ namespace Infrastructure.Requests.Interfaces
 
     public class DeleteInterfaceRequestHandler : IRequestHandler<DeleteInterfaceRequest, RequestResult<IdVM>>
     {
-        private readonly DBContext _context;
+        private readonly ObjzerContext _context;
 
-        public DeleteInterfaceRequestHandler(DBContext context)
+        public DeleteInterfaceRequestHandler(ObjzerContext context)
         {
             _context = context;
         }
