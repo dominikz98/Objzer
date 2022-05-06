@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ModalController, ToastController } from '@ionic/angular';
-import { promise } from 'protractor';
 import { map } from 'rxjs/operators';
 import { InterfacesEndpoints } from 'src/app/endpoints/interfaces.endpoints';
 import { EditPropertyModalPage } from 'src/app/modals/edit-property-modal/edit-property-modal.page';
 import { InterfaceModel } from 'src/app/models/interface.model';
 import { PropertyModel } from 'src/app/models/property.model';
-import { EditInterfaceVM, ListInterfaceVM, PropertyVM } from 'src/app/models/viewmodels';
+import { InterfaceVM, ListInterfaceVM, PropertyVM } from 'src/app/models/viewmodels';
 
 @Component({
   selector: 'app-edit',
@@ -18,6 +17,7 @@ export class EditPage implements OnInit {
   public interfaces: ListInterfaceVM[];
   public model: InterfaceModel;
   public modified: boolean;
+  public historyCutOff: number = 6;
 
   private id: string;
 
@@ -68,8 +68,9 @@ export class EditPage implements OnInit {
 
     this.endpoints.getById(this.id)
       .subscribe((response: any) => {
-        var casted = response?.value as EditInterfaceVM;
+        var casted = response?.value as InterfaceVM;
         this.model = new InterfaceModel(casted);
+        this.model.value.history = this.model.value.history.slice(0, this.historyCutOff);
 
         if (this.model.value.locked) {
           this.model.form.disable();

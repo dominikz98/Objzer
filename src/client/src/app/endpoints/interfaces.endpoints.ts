@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { ApiClient } from './apiclient';
-import { EditInterfaceVM, IdVM, InterfaceVM, ListInterfaceVM } from '../models/viewmodels';
+import { IdVM, InterfaceVM, ListInterfaceVM } from '../models/viewmodels';
 
 
 @Injectable({
@@ -21,12 +21,12 @@ export class InterfacesEndpoints {
     return this.client.get<ListInterfaceVM[]>(this.route);
   }
 
-  create(model: EditInterfaceVM): Observable<InterfaceVM> {
-    return this.client.post<EditInterfaceVM, InterfaceVM>(this.route, model);
+  create(model: InterfaceVM): Observable<InterfaceVM> {
+    return this.client.post<InterfaceVM, InterfaceVM>(this.route, model);
   }
 
-  update(model: EditInterfaceVM): Observable<InterfaceVM> {
-    return this.client.put<EditInterfaceVM, InterfaceVM>(this.route, model);
+  update(model: InterfaceVM): Observable<InterfaceVM> {
+    return this.client.put<InterfaceVM, InterfaceVM>(this.route, model);
   }
 
   lock(id: string): Observable<any> {

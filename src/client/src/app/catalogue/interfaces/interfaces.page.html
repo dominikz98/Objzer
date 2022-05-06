@@ -6,7 +6,22 @@
         <ion-icon slot="icon-only" name="add-circle"></ion-icon>
       </ion-button>
     </ion-buttons>
-    <ion-searchbar></ion-searchbar>
+    <ion-searchbar [formControl]="searchField"></ion-searchbar>
+    <ion-chip [class]="checkIsSelected(0)" (click)="onFilterAll()">
+      <ion-label>All</ion-label>
+    </ion-chip>
+    <ion-chip [class]="checkIsSelected(1)" (click)="onFilterActive()">
+      <ion-icon name="checkmark-outline"></ion-icon>
+      <ion-label>Active</ion-label>
+    </ion-chip>
+    <ion-chip [class]="checkIsSelected(2)" (click)="onFilterLocked()" color="warning">
+      <ion-icon name="lock-closed-outline"></ion-icon>
+      <ion-label>Locked</ion-label>
+    </ion-chip>
+    <ion-chip [class]="checkIsSelected(3)" (click)="onFilterArchived()" color="tertiary">
+      <ion-icon name="archive-outline"></ion-icon>
+      <ion-label>Archived</ion-label>
+    </ion-chip>
   </ion-toolbar>
 
   <ion-list>

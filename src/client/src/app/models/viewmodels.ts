@@ -19,15 +19,6 @@ export class ListInterfaceVM {
     objectsCount: number;
 }
 
-export class EditInterfaceVM {
-    id: string;
-    name: string;
-    description: string;
-    properties: PropertyVM[];
-    includingIds: string[];
-    locked: boolean;
-}
-
 export class InterfaceVM {
     id: string;
     name: string;
@@ -36,6 +27,7 @@ export class InterfaceVM {
     description: string;
     properties: PropertyVM[];
     history: HistoryVM[];
+    includingIds: string[];
 }
 
 export class PropertyVM {

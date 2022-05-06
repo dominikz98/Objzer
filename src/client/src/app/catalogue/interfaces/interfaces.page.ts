@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Platform } from '@ionic/angular';
+import { FormControl } from '@angular/forms';
+import { Router } from '@angular/router';
 import { InterfacesEndpoints } from 'src/app/endpoints/interfaces.endpoints';
 import { ListInterfaceVM } from 'src/app/models/viewmodels';
 
@@ -12,21 +12,88 @@ import { ListInterfaceVM } from 'src/app/models/viewmodels';
 export class InterfacesPage implements OnInit {
 
   public interfaces: ListInterfaceVM[];
-  public isMobile: boolean;
+  public searchField: FormControl;
+  private filter: Filter = Filter.Active;
+  private allInterfaces: ListInterfaceVM[];
 
   constructor(
     private endpoints: InterfacesEndpoints,
     private router: Router) {
+    this.searchField = new FormControl('');
   }
 
   ngOnInit() {
+    this.searchField.valueChanges.subscribe(() => {
+      this.filterItems();
+    })
     this.endpoints.getAll()
       .subscribe((data: ListInterfaceVM[]) => {
-        this.interfaces = data;
+        this.allInterfaces = data;
+        this.filterItems();
       });
   }
 
   onEdit(value: ListInterfaceVM) {
     this.router.navigate(['catalogue/interfaces/edit', value.id]);
   }
+
+  checkIsSelected(filter: Filter): string {
+    if (this.filter == filter) {
+      return 'active-filter';
+    }
+
+    return '';
+  }
+
+  onFilterAll() {
+    this.filter = Filter.All;
+    this.filterItems();
+  }
+
+  onFilterActive() {
+    this.filter = Filter.Active;
+    this.filterItems();
+  }
+
+  onFilterLocked() {
+    this.filter = Filter.Locked;
+    this.filterItems();
+  }
+
+  onFilterArchived() {
+    this.filter = Filter.Archived;
+    this.filterItems();
+  }
+
+  filterItems() {
+    // apply search
+    let tmpInterfaces = this.allInterfaces.filter(x => x.name.toLowerCase().startsWith(this.searchField.value.toLowerCase()));
+
+    // apply filter
+    switch (this.filter) {
+      case Filter.All: {
+        this.interfaces = tmpInterfaces;
+        break;
+      }
+      case Filter.Active: {
+        this.interfaces = tmpInterfaces.filter(x => !x.archived && !x.locked);
+        break;
+      }
+      case Filter.Locked: {
+        this.interfaces = tmpInterfaces.filter(x => x.locked);
+        break;
+      }
+      case Filter.Archived: {
+        this.interfaces = tmpInterfaces.filter(x => x.archived);
+        break;
+      }
+    }
+  }
+}
+
+enum Filter {
+  All,
+  Active,
+  Locked,
+  Archived
 }

@@ -1,15 +1,15 @@
 import { FormControl, FormGroup, Validators } from "@angular/forms";
-import { EditInterfaceVM } from "./viewmodels";
+import { InterfaceVM } from "./viewmodels";
 
 export class InterfaceModel {
     public form: FormGroup;
-    public value: EditInterfaceVM;
+    public value: InterfaceVM;
 
-    constructor(value?: EditInterfaceVM) {
+    constructor(value?: InterfaceVM) {
         this.value = value;
 
         if (this.value == null) {
-            this.value = new EditInterfaceVM();
+            this.value = new InterfaceVM();
         }
 
         if (this.value.properties == null) {
