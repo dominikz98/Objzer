@@ -43,7 +43,7 @@ export class EditPage implements OnInit {
   onLock() {
     this.endpoints.lock(this.id)
       .subscribe(() => {
-        this.model.value.locked = true;
+        this.loadInterface();
         this.model.form.disable();
       });
   }
@@ -51,7 +51,7 @@ export class EditPage implements OnInit {
   onUnlock() {
     this.endpoints.unlock(this.id)
       .subscribe(() => {
-        this.model.value.locked = false;
+        this.loadInterface();
         this.model.form.enable();
       });
   }
@@ -70,6 +70,7 @@ export class EditPage implements OnInit {
       .subscribe((response: any) => {
         var casted = response?.value as InterfaceVM;
         this.model = new InterfaceModel(casted);
+        console.log(this.model.value.history);
         this.model.value.history = this.model.value.history.slice(0, this.historyCutOff);
 
         if (this.model.value.locked) {
@@ -184,10 +185,12 @@ export class EditPage implements OnInit {
       case 1:
         return 'item-history-upd-color'
       case 2:
+        return 'item-history-del-color'
       case 3:
-        return 'item-history-lock-color'
       case 4:
+        return 'item-history-lock-color'
       case 5:
+      case 6:
         return 'item-history-archive-color'
       default:
         return;
@@ -201,12 +204,14 @@ export class EditPage implements OnInit {
       case 1:
         return 'Update'
       case 2:
-        return 'Lock'
+        return 'Delete'
       case 3:
-        return 'Unlock'
+        return 'Lock'
       case 4:
-        return 'Archive'
+        return 'Unlock'
       case 5:
+        return 'Archive'
+      case 6:
         return 'Restore'
       default:
         return;

@@ -99,17 +99,17 @@
             <h2>History</h2>
           </ion-item>
           <ion-list>
-            <ion-item [class]="getHistoryColor(history.action)" *ngFor="let history of model.value.history">
+            <ion-item [class]="getHistoryColor(hs.action)" *ngFor="let hs of model?.value.history">
               <ion-grid>
                 <ion-row>
                   <ion-col class="ion-align-self-center">
-                    <b> {{ getHistoryName(history.action) }} </b>
+                    <b> {{ getHistoryName(hs.action) }} </b>
                   </ion-col>
                   <ion-col class="ion-align-self-center">
-                    <b> {{ history.timestamp | date }} </b>
+                    <b> {{ hs.timestamp | date }} </b>
                   </ion-col>
                   <ion-col size="1" class="ion-align-self-center">
-                    <b> {{ history.changes.length }} </b>
+                    <b> {{ hs.changes.length }} </b>
                   </ion-col>
                 </ion-row>
               </ion-grid>
