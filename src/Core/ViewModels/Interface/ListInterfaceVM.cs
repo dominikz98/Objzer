@@ -9,6 +9,6 @@
         public int HistoryCount { get; set; }
         public int PropertiesCount { get; set; }
         public bool Locked { get; set; }
-        public DateOnly? Archived { get; set; }
+        public DateTime? Archived { get; set; }
     }
 }

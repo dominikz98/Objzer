@@ -48,7 +48,7 @@ namespace Infrastructure.Requests.Interfaces
                     Id = x.Id,
                     Name = x.Name,
                     Description = x.Description,
-                    Archived = x.Archived,
+                    Archived = x.Archived?.ToDateTime(TimeOnly.MinValue),
                     Locked = x.Locked,
                     LastModified = history.Where(y => y.EntityId == x.Id).Max(y => y.Timestamp),
                     HistoryCount = history.Where(y => y.EntityId == x.Id).Count(),

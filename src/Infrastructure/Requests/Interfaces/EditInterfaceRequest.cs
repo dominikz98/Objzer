@@ -77,7 +77,7 @@ namespace Infrastructure.Requests.Interfaces
                 if (assignment is not null)
                 {
                     // remove deleted flag
-                    assignment.Deleted = true;
+                    assignment.Deleted = false;
                     continue;
                 }
 

@@ -20,6 +20,11 @@ namespace Infrastructure.Mapper
     public class InterfaceVMProfile : Profile
     {
         public InterfaceVMProfile()
-            => CreateMap<CTInterface, InterfaceVM>();
+            => CreateMap<CTInterface, InterfaceVM>()
+                .ForMember(x => x.Archived,
+                    x => x.MapFrom(y => y.Archived == null ? (DateTime?)null : y.Archived.Value.ToDateTime(TimeOnly.MinValue)))
+                .ForMember(x => x.IncludingIds,
+                    x => x.MapFrom(y => y.Includings
+                        .Select(z => z.DestinationId)));
     }
 }

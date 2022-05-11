@@ -57,7 +57,19 @@ export class EditPage implements OnInit {
   }
 
   onArchive() {
-    console.log('onarchive');
+    this.endpoints.archive(this.id)
+      .subscribe(() => {
+        this.loadInterface();
+        this.model.form.enable();
+      });
+  }
+
+  onRestore() {
+    this.endpoints.restore(this.id)
+      .subscribe(() => {
+        this.loadInterface();
+        this.model.form.enable();
+      });
   }
 
   loadInterface() {
@@ -70,7 +82,6 @@ export class EditPage implements OnInit {
       .subscribe((response: any) => {
         var casted = response?.value as InterfaceVM;
         this.model = new InterfaceModel(casted);
-        console.log(this.model.value.history);
         this.model.value.history = this.model.value.history.slice(0, this.historyCutOff);
 
         if (this.model.value.locked) {
@@ -142,7 +153,6 @@ export class EditPage implements OnInit {
   }
 
   async onSave() {
-    console.log(this.model.form.invalid);
     if (this.model.form.invalid) {
       return;
     }
@@ -152,13 +162,14 @@ export class EditPage implements OnInit {
     if (this.model.value.id == null) {
       await this.endpoints.create(this.model.value).toPromise();
     } else {
-      this.endpoints.update(this.model.value).toPromise();
+      await this.endpoints.update(this.model.value).toPromise();
     }
 
-    // Show success toast
-
     // Navigates to url entry to destroy page lifecycle
-    this.router.navigate(['/catalogue/interfaces']);
+    this.router.navigate(['/catalogue/interfaces'])
+      .then(() => {
+        window.location.reload();
+      });
   }
 
   onImplementationChange($event) {
@@ -167,11 +178,21 @@ export class EditPage implements OnInit {
     }
 
     this.modified = true;
+    this.addOrRemoveImplementation($event.target.value.id, $event.target.checked);
 
-    if ($event.target.checked) {
-      this.model.value.includingIds.push($event.target.value.id);
+    console.log(this.model.value.includingIds);
+  }
+
+  createIncludingKey(id: string) {
+    return `including_${id}`;
+  }
+
+  addOrRemoveImplementation(id: string, checked: boolean) {
+    if (checked) {
+      this.model.value.includingIds.push(id);
     } else {
-      const index = this.model.value.includingIds.indexOf($event.target.value.id, 0);
+      const index = this.model.value.includingIds.indexOf(id, 0);
+
       if (index > -1) {
         this.model.value.includingIds.splice(index, 1);
       }

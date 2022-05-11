@@ -8,9 +8,9 @@ namespace Infrastructure.Requests
     public class RestoreOrArchiveEntityRequest<T> : IRequest<EmptyRequestResult> where T : class, IEntity
     {
         public Guid Id { get; set; }
-        public DateOnly? Archived { get; set; }
+        public DateTime? Archived { get; set; }
 
-        public RestoreOrArchiveEntityRequest(Guid id, DateOnly? archive)
+        public RestoreOrArchiveEntityRequest(Guid id, DateTime? archive)
         {
             Id = id;
             Archived = archive;
@@ -40,6 +40,7 @@ namespace Infrastructure.Requests
             else
                 await _context.RestoreAsync(entity, cancellationToken);
 
+            await _context.SaveChangesAsync(cancellationToken);
             return EmptyRequestResult.Success();
         }
     }

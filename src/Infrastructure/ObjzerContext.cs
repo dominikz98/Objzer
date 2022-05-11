@@ -131,7 +131,7 @@ namespace Infrastructure.Core
         public async ValueTask<EntityEntry<TEntity>> RestoreAsync<TEntity>(TEntity entity, CancellationToken cancellationToken) where TEntity : class, IEntity
         {
             entity.Locked = false;
-            entity.Archived = DateOnly.FromDateTime(DateTime.Now);
+            entity.Archived = null;
 
             var entry = Entry(entity);
             if (entry.State != EntityState.Modified)

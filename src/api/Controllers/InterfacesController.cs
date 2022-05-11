@@ -85,7 +85,7 @@ namespace Api.Controllers
         [HttpPut("archive/{id:guid}")]
         public async Task<IActionResult> Archive(Guid id, CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(new RestoreOrArchiveEntityRequest<CTInterface>(id, DateOnly.FromDateTime(DateTime.Now)), cancellationToken);
+            var result = await _mediator.Send(new RestoreOrArchiveEntityRequest<CTInterface>(id, DateTime.Now), cancellationToken);
             return result.Status switch
             {
                 RequestResultStatus.SUCCESS => Ok(),
