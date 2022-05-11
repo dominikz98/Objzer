@@ -183,10 +183,6 @@ export class EditPage implements OnInit {
     console.log(this.model.value.includingIds);
   }
 
-  createIncludingKey(id: string) {
-    return `including_${id}`;
-  }
-
   addOrRemoveImplementation(id: string, checked: boolean) {
     if (checked) {
       this.model.value.includingIds.push(id);
