@@ -16,10 +16,6 @@ export class InterfaceModel {
             this.value.properties = [];
         }
 
-        if (this.value.includingIds == null) {
-            this.value.includingIds = [];
-        }
-
         this.form = new FormGroup({
             name: new FormControl(this.value.name, [
                 Validators.required,

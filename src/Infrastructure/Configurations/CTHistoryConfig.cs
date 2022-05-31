@@ -7,7 +7,7 @@ namespace Infrastructure.Configurations
     public static class CTHistoryConfigExtensions
     {
         public static void ApplyCTHistory(this ModelBuilder builder)
-        => builder.ApplyConfiguration(new CTHistoryConfig());
+            => builder.ApplyConfiguration(new CTHistoryConfig());
     }
 
     public class CTHistoryConfig : IEntityTypeConfiguration<CTHistory>

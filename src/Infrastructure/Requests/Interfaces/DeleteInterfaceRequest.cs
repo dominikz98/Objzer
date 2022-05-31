@@ -28,7 +28,6 @@ namespace Infrastructure.Requests.Interfaces
         public async Task<RequestResult<IdVM>> Handle(DeleteInterfaceRequest request, CancellationToken cancellationToken)
         {
             var @interface = await _context.Set<CTInterface>()
-                .Include(x => x.Includings)
                 .Include(x => x.Properties)
                 .Where(x => x.Id == request.Id)
                 .FirstOrDefaultAsync(cancellationToken);
@@ -37,7 +36,6 @@ namespace Infrastructure.Requests.Interfaces
                 return RequestResult<IdVM>.Null();
 
             _context.RemoveRange(@interface.Properties);
-            _context.RemoveRange(@interface.Includings);
             _context.Remove(@interface);
 
             await _context.SaveChangesAsync(cancellationToken);

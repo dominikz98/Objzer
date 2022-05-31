@@ -33,8 +33,6 @@ namespace Infrastructure.Requests.Interfaces
         {
             // load interface with references
             var @interface = await _context.Set<CTInterface>()
-                .Include(x => x.Includings)
-                .ThenInclude(x => x.Destination)
                 .Include(x => x.Properties)
                 .AsNoTracking()
                 .Where(x => x.Id == request.Id)

@@ -30,15 +30,6 @@ const routes: Routes = [
             loadChildren: () => import('./interfaces/interfaces.module').then(m => m.InterfacesPageModule)
           }
         ]
-      },
-      {
-        path: 'abstractions',
-        children: [
-          {
-            path: '',
-            loadChildren: () => import('./abstractions/abstractions.module').then(m => m.AbstractionsPageModule)
-          }
-        ]
       }
     ]
   }

@@ -7,9 +7,4 @@
         bool Locked { get; set; }
         DateOnly? Archived { get; set; }
     }
-
-    public interface ISubEntity : IDeletable
-    {
-        Guid ReferenceId { get; set; }
-    }
 }

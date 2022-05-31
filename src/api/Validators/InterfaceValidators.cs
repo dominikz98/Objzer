@@ -20,4 +20,12 @@ namespace Api.Validators
         public EditInterfaceVMVMValidator()
             => RuleFor(x => x.Id).NotEmpty();
     }
+
+    public class AddInterfacePropertyVMValidator : AbstractValidator<InterfacePropertyVM>
+    {
+        public AddInterfacePropertyVMValidator()
+        {
+            RuleFor(x => x.Name).NotEmpty();
+        }
+    }
 }

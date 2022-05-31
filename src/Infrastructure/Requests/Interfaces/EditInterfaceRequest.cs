@@ -33,7 +33,6 @@ namespace Infrastructure.Requests.Interfaces
             // load interface
             var @interface = await _context.Set<CTInterface>()
                 .IgnoreQueryFilters()
-                .Include(x => x.Includings)
                 .Include(x => x.Properties)
                 .Where(x => x.Id == request.Id)
                 .FirstOrDefaultAsync(cancellationToken);
@@ -44,7 +43,6 @@ namespace Infrastructure.Requests.Interfaces
             // mappings
             @interface.Name = request.Name;
             @interface.Description = request.Description;
-            await UpdateIncludings(@interface, request.IncludingIds, cancellationToken);
             await UpdateProperties(@interface, request.Properties, cancellationToken);
 
             // save changes
@@ -56,42 +54,6 @@ namespace Infrastructure.Requests.Interfaces
 
             var vm = _mapper.Map<InterfaceVM>(@interface);
             return RequestResult<InterfaceVM>.Success(vm);
-        }
-
-        private async Task UpdateIncludings(CTInterface @interface, List<Guid> currentIncludingIds, CancellationToken cancellationToken)
-        {
-            // remove missing assignments
-            foreach (var original in @interface.Includings)
-            {
-                var contains = currentIncludingIds.Contains(original.DestinationId);
-                if (contains)
-                    continue;
-
-                original.Deleted = true;
-            }
-
-            foreach (var currentId in currentIncludingIds)
-            {
-                var assignment = @interface.Includings.FirstOrDefault(x => x.DestinationId == currentId);
-
-                if (assignment is not null)
-                {
-                    // remove deleted flag
-                    assignment.Deleted = false;
-                    continue;
-                }
-
-                // add new
-                assignment = new CTInterfaceAssignment()
-                {
-                    ReferenceId = @interface.Id,
-                    DestinationId = currentId
-                };
-
-                @interface.Includings.Add(assignment);
-                await _context.AddAsync(assignment, cancellationToken);
-                continue;
-            }
         }
 
         private async Task UpdateProperties(CTInterface @interface, List<CTInterfaceProperty> currentProperties, CancellationToken cancellationToken)
@@ -124,7 +86,7 @@ namespace Infrastructure.Requests.Interfaces
                 }
 
                 // add new
-                current.ReferenceId = @interface.Id;
+                current.InterfaceId = @interface.Id;
                 @interface.Properties.Add(current);
                 await _context.AddAsync(current, cancellationToken);
             }

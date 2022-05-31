@@ -16,7 +16,6 @@ export class ListInterfaceVM {
     archived: Date;
     historyCount: number;
     propertiesCount: number;
-    objectsCount: number;
 }
 
 export class InterfaceVM {
@@ -27,7 +26,6 @@ export class InterfaceVM {
     description: string;
     properties: PropertyVM[];
     history: HistoryVM[];
-    includingIds: string[];
 }
 
 export class PropertyVM {

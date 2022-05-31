@@ -1,8 +1,8 @@
 ﻿using Core.Models.Enumerations;
 
-namespace Core.ViewModels.Properties
+namespace Core.ViewModels.Interface
 {
-    public class PropertyVM
+    public class InterfacePropertyVM
     {
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }

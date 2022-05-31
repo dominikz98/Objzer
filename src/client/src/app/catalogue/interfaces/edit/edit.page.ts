@@ -172,29 +172,6 @@ export class EditPage implements OnInit {
       });
   }
 
-  onImplementationChange($event) {
-    if ($event.target.value.id == null) {
-      return;
-    }
-
-    this.modified = true;
-    this.addOrRemoveImplementation($event.target.value.id, $event.target.checked);
-
-    console.log(this.model.value.includingIds);
-  }
-
-  addOrRemoveImplementation(id: string, checked: boolean) {
-    if (checked) {
-      this.model.value.includingIds.push(id);
-    } else {
-      const index = this.model.value.includingIds.indexOf(id, 0);
-
-      if (index > -1) {
-        this.model.value.includingIds.splice(index, 1);
-      }
-    }
-  }
-
   getHistoryColor(action: number): string {
     switch (action) {
       case 0:

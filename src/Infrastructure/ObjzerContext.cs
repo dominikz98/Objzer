@@ -28,6 +28,8 @@ namespace Infrastructure.Core
         protected override void OnModelCreating(ModelBuilder builder)
         {
             ApplyCTEntityQueryFilter(builder);
+
+            builder.ApplyCTObject();
             builder.ApplyCTInterface();
             builder.ApplyCTHistory();
         }

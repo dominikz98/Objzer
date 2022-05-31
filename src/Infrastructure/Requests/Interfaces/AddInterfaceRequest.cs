@@ -45,9 +45,6 @@ namespace Infrastructure.Requests.Interfaces
                 Description = request.Description
             };
 
-            // attach includings
-            await AddIncludings(@interface, request.IncludingIds, cancellationToken);
-
             // attach properties
             await AddProperties(@interface, request.Properties, cancellationToken);
 
@@ -62,25 +59,11 @@ namespace Infrastructure.Requests.Interfaces
             return RequestResult<InterfaceVM>.Success(vm);
         }
 
-        private async Task AddIncludings(CTInterface @interface, List<Guid> includingIds, CancellationToken cancellationToken)
-        {
-            foreach (var includingId in includingIds)
-            {
-                var assignment = new CTInterfaceAssignment()
-                {
-                    ReferenceId = @interface.Id,
-                    DestinationId = includingId
-                };
-                await _context.AddAsync(assignment, cancellationToken);
-                @interface.Includings.Add(assignment);
-            }
-        }
-
         private async Task AddProperties(CTInterface @interface, List<CTInterfaceProperty> properties, CancellationToken cancellationToken)
         {
             foreach (var property in properties)
             {
-                property.ReferenceId = @interface.Id;
+                property.InterfaceId = @interface.Id;
 
                 await _context.AddAsync(property, cancellationToken);
                 @interface.Properties.Add(property);
