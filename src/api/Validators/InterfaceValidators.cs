@@ -1,31 +1,30 @@
-﻿using Core.ViewModels.Interface;
+﻿using Core.ViewModels.Interfaces;
 using FluentValidation;
 
-namespace Api.Validators
+namespace Api.Validators;
+
+public class InterfaceValidators
 {
-    public class InterfaceValidators
+    public class AddInterfaceVMValidator : AbstractValidator<AddInterfaceVM>
     {
-        public class AddInterfaceVMValidator : AbstractValidator<AddInterfaceVM>
-        {
-            public AddInterfaceVMValidator()
-            {
-                RuleFor(x => x.Name).NotEmpty();
-                RuleFor(x => x.Description).NotEmpty();
-            }
-        }
-    }
-
-    public class EditInterfaceVMVMValidator : AbstractValidator<InterfaceVM>
-    {
-        public EditInterfaceVMVMValidator()
-            => RuleFor(x => x.Id).NotEmpty();
-    }
-
-    public class AddInterfacePropertyVMValidator : AbstractValidator<InterfacePropertyVM>
-    {
-        public AddInterfacePropertyVMValidator()
+        public AddInterfaceVMValidator()
         {
             RuleFor(x => x.Name).NotEmpty();
+            RuleFor(x => x.Description).NotEmpty();
         }
+    }
+}
+
+public class EditInterfaceVMVMValidator : AbstractValidator<InterfaceVM>
+{
+    public EditInterfaceVMVMValidator()
+        => RuleFor(x => x.Id).NotEmpty();
+}
+
+public class AddInterfacePropertyVMValidator : AbstractValidator<InterfacePropertyVM>
+{
+    public AddInterfacePropertyVMValidator()
+    {
+        RuleFor(x => x.Name).NotEmpty();
     }
 }

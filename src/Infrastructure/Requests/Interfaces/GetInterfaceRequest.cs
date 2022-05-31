@@ -1,51 +1,49 @@
 ﻿using AutoMapper;
 using Core.Models;
-using Core.ViewModels.Interface;
-using Infrastructure.Core;
+using Core.ViewModels.Interfaces;
 using Infrastructure.Extensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Requests.Interfaces
-{
-    public class GetInterfaceRequest : IRequest<RequestResult<InterfaceVM>>
-    {
-        public Guid Id { get; set; }
+namespace Infrastructure.Requests.Interfaces;
 
-        public GetInterfaceRequest(Guid id)
-        {
-            Id = id;
-        }
+public class GetInterfaceRequest : IRequest<RequestResult<InterfaceVM>>
+{
+    public Guid Id { get; set; }
+
+    public GetInterfaceRequest(Guid id)
+    {
+        Id = id;
+    }
+}
+
+public class GetInterfaceRequestHandler : IRequestHandler<GetInterfaceRequest, RequestResult<InterfaceVM>>
+{
+    private readonly IMapper _mapper;
+    private readonly ObjzerContext _context;
+
+    public GetInterfaceRequestHandler(IMapper mapper, ObjzerContext context)
+    {
+        _mapper = mapper;
+        _context = context;
     }
 
-    public class GetInterfaceRequestHandler : IRequestHandler<GetInterfaceRequest, RequestResult<InterfaceVM>>
+    public async Task<RequestResult<InterfaceVM>> Handle(GetInterfaceRequest request, CancellationToken cancellationToken)
     {
-        private readonly IMapper _mapper;
-        private readonly ObjzerContext _context;
+        // load interface with references
+        var @interface = await _context.Set<CTInterface>()
+            .Include(x => x.Properties)
+            .AsNoTracking()
+            .Where(x => x.Id == request.Id)
+            .FirstOrDefaultAsync(cancellationToken);
 
-        public GetInterfaceRequestHandler(IMapper mapper, ObjzerContext context)
-        {
-            _mapper = mapper;
-            _context = context;
-        }
+        if (@interface is null)
+            return RequestResult<InterfaceVM>.Null();
 
-        public async Task<RequestResult<InterfaceVM>> Handle(GetInterfaceRequest request, CancellationToken cancellationToken)
-        {
-            // load interface with references
-            var @interface = await _context.Set<CTInterface>()
-                .Include(x => x.Properties)
-                .AsNoTracking()
-                .Where(x => x.Id == request.Id)
-                .FirstOrDefaultAsync(cancellationToken);
+        // attach history
+        @interface.History = await _context.Set<CTHistory>().GetByEntity(@interface.Id);
 
-            if (@interface is null)
-                return RequestResult<InterfaceVM>.Null();
-
-            // attach history
-            @interface.History = await _context.Set<CTHistory>().GetByEntity(@interface.Id);
-
-            var vm = _mapper.Map<InterfaceVM>(@interface);
-            return RequestResult<InterfaceVM>.Success(vm);
-        }
+        var vm = _mapper.Map<InterfaceVM>(@interface);
+        return RequestResult<InterfaceVM>.Success(vm);
     }
 }

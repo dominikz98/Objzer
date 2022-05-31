@@ -1,13 +1,12 @@
-﻿namespace Core.Models.Enumerations
+﻿namespace Core.Models.Enumerations;
+
+public enum HistoryAction
 {
-    public enum HistoryAction
-    {
-        Add,
-        Update,
-        Delete,
-        Lock,
-        Unlock,
-        Archive,
-        Restore
-    }
+    Add,
+    Update,
+    Delete,
+    Lock,
+    Unlock,
+    Archive,
+    Restore
 }

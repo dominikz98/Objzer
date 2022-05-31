@@ -1,6 +1,6 @@
 using Core.Models;
 using FluentValidation.AspNetCore;
-using Infrastructure.Core;
+using Infrastructure;
 using Infrastructure.Mapper;
 using Infrastructure.Requests;
 using MediatR;

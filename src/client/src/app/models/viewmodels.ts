@@ -42,3 +42,24 @@ export class HistoryVM {
     entityId: string;
     changes: string;
 }
+
+export class ListObjectVM {
+    id: string;
+    name: string;
+    description: string;
+    lastModified: Date;
+    locked: boolean;
+    archived: Date;
+    historyCount: number;
+    propertiesCount: number;
+}
+
+export class ObjectVM {
+    id: string;
+    name: string;
+    locked: boolean;
+    archived: Date;
+    description: string;
+    properties: PropertyVM[];
+    history: HistoryVM[];
+}

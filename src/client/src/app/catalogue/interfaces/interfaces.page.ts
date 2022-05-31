@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { InterfacesEndpoints } from 'src/app/endpoints/interfaces.endpoints';
+import { Filter } from 'src/app/enums/Filter';
 import { ListInterfaceVM } from 'src/app/models/viewmodels';
 
 @Component({
@@ -89,11 +90,4 @@ export class InterfacesPage implements OnInit {
       }
     }
   }
-}
-
-enum Filter {
-  All,
-  Active,
-  Locked,
-  Archived
 }

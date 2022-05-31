@@ -1,26 +1,26 @@
 ﻿using Core.DTOs;
 using Core.Models;
-using Core.ViewModels.Interfaces;
+using Core.ViewModels.Objects;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure.Requests.Interfaces;
+namespace Infrastructure.Requests.Objects;
 
-public class GetAllInterfacesRequest : IRequest<IReadOnlyCollection<ListInterfaceVM>> { }
+public class GetAllObjectsRequest : IRequest<IReadOnlyCollection<ListObjectVM>> { }
 
-public class GetAllInterfacesRequestHandler : IRequestHandler<GetAllInterfacesRequest, IReadOnlyCollection<ListInterfaceVM>>
+public class GetAllObjectsRequestRequestHandler : IRequestHandler<GetAllObjectsRequest, IReadOnlyCollection<ListObjectVM>>
 {
     private readonly ObjzerContext _context;
 
-    public GetAllInterfacesRequestHandler(ObjzerContext context)
+    public GetAllObjectsRequestRequestHandler(ObjzerContext context)
     {
         _context = context;
     }
 
-    public async Task<IReadOnlyCollection<ListInterfaceVM>> Handle(GetAllInterfacesRequest request, CancellationToken cancellationToken)
+    public async Task<IReadOnlyCollection<ListObjectVM>> Handle(GetAllObjectsRequest request, CancellationToken cancellationToken)
     {
         // load from db
-        var interfaces = await _context.Set<CTInterface>()
+        var interfaces = await _context.Set<CTObject>()
             .Select(x => new EntityDTO
             {
                 Id = x.Id,
@@ -42,7 +42,7 @@ public class GetAllInterfacesRequestHandler : IRequestHandler<GetAllInterfacesRe
 
         // create viewmodels
         return interfaces
-            .Select(x => new ListInterfaceVM()
+            .Select(x => new ListObjectVM()
             {
                 Id = x.Id,
                 Name = x.Name,

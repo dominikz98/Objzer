@@ -1,7 +1,6 @@
-﻿namespace Core.Models.Contracts
+﻿namespace Core.Models.Contracts;
+
+public interface IDeletable
 {
-    public interface IDeletable
-    {
-        bool Deleted { get; set; }
-    }
+    bool Deleted { get; set; }
 }

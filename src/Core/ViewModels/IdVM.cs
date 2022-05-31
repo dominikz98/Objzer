@@ -1,7 +1,6 @@
-﻿namespace Core.ViewModels
+﻿namespace Core.ViewModels;
+
+public class IdVM
 {
-    public class IdVM
-    {
-        public Guid Id { get; set; }
-    }
+    public Guid Id { get; set; }
 }

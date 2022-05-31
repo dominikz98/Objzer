@@ -1,19 +1,18 @@
-﻿namespace Core.Models.Enumerations
+﻿namespace Core.Models.Enumerations;
+
+public enum PropertyType
 {
-    public enum PropertyType
-    {
-        Guid,
-        String,
-        Int,
-        Double,
-        Decimal,
-        DateTime,
-        DateOnly,
-        TimeOnly,
-        Bool,
-        Byte,
-        Char,
-        Short,
-        Long
-    }
+    Guid,
+    String,
+    Int,
+    Double,
+    Decimal,
+    DateTime,
+    DateOnly,
+    TimeOnly,
+    Bool,
+    Byte,
+    Char,
+    Short,
+    Long
 }

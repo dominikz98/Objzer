@@ -1,8 +1,7 @@
-﻿namespace Core.ViewModels
+﻿namespace Core.ViewModels;
+
+public class EnumVM
 {
-    public class EnumVM
-    {
-        public int Index { get; set; }
-        public string Name { get; set; } = string.Empty;
-    }
+    public int Index { get; set; }
+    public string Name { get; set; } = string.Empty;
 }
