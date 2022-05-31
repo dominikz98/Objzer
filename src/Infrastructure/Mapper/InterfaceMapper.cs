@@ -29,6 +29,6 @@ public class InterfaceVMProfile : Profile
 public class InterfacePropertyVMProfile : Profile
 {
     public InterfacePropertyVMProfile()
-        => CreateMap<ObjectPropertyVM, CTInterfaceProperty>()
+        => CreateMap<InterfacePropertyVM, CTInterfaceProperty>()
             .ReverseMap();
 }
